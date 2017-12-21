@@ -1,0 +1,25 @@
+<div class="modal-header">
+	<button type="button" class="close" aria-label="Close" ng-click="$ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="modalEmployee">Empleado</h4>
+</div>
+<div class="modal-body">
+	<form id="frm-otros-empleados" ng-submit="$ctrl.save()">
+		<div class="form-group">
+			<input type="text" ng-model="$ctrl.params.nombre" class="form-control input-sm" id="nombre" placeholder="Nombre" size="36" required ng-disabled="$ctrl.sending">
+		</div>
+		<div class="form-group">
+			<input type="text" ng-model="$ctrl.params.apellido" class="form-control input-sm" id="apellido" placeholder="Apellido" size="36" required ng-disabled="$ctrl.sending">
+		</div>
+		<div class="form-group">
+			<input type="email" ng-model="$ctrl.params.correo" class="form-control input-sm" id="correo" placeholder="Correo electrónico" size="36" required ng-disabled="$ctrl.sending">
+		</div>
+		<div class="form-group">
+			<input type="text" ng-model="$ctrl.params.dni" class="form-control input-sm" id="dni" placeholder="DNI" size="9" maxlength="8" ng-disabled="$ctrl.sending">
+		</div>
+		<hr>
+		<div class="mb0 text-right">
+			<button type="button" class="btn btn-sm btn-default" ng-click="$ctrl.close()" ng-disabled="$ctrl.sending">Cancelar</button>
+			<button type="submit" class="btn btn-sm btn-warning"><i class="fa fa-check" ng-disabled="$ctrl.sending"></i> Guardar</button>
+		</div>
+	</form>
+</div>

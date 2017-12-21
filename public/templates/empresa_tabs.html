@@ -1,0 +1,82 @@
+<div ng-controller="DetalleEmpresaCtrl" ng-if="empresa.basic.empresa_ruc != ''" class="page">
+
+    <div ng-if="!loading && error">
+        <i class="fa fa-times fa-2x text-danger"></i> <strong>Error al cargar módulo</strong>
+        <br><br>
+        <pre>{{ errorDetails }}</pre>
+    </div>
+
+    <div class="mt20" ng-if="loading">
+        <i class="fa fa-cog fa-spin fa-2x fa-fw"></i><strong>Cargando...</strong>
+    </div>
+    
+    <div ng-if="!loading && !error">
+    	<div ng-if="empresa.basic!=='S' && empresa.basic.contrato.diferencia == 0" class="alert alert-danger"><i class="fa fa-exclamation-circle fa-fw"></i>El contrato de este cliente vence hoy</div>
+    	<div ng-if="empresa.basic!=='S'  && empresa.basic.contrato.diferencia < 0" class="alert alert-danger"><i class="fa fa-exclamation-circle fa-fw"></i>El contrato de este cliente ya venció. </div>
+        <div ng-if="empresa.basic!=='S'  && empresa.basic.contrato.diferencia > 0 && empresa.basic.contrato.diferencia < 15" class="alert alert-warning"> <i class="fa fa-warning fa-fw"></i> El contrato de este cliente está por vencer en {{empresa.basic.contrato.diferencia}} {{ (empresa.basic.contrato.diferencia>1)?'dias':'día' }}</div>
+    	
+    	<!-- convenio -->
+    	<div ng-if="empresa.basic==='S'" class="alert alert-info alerta-contrato">
+    		<strong>
+                <i class="fa fa-info-circle fa-lg fa-fw"></i> Convenio,
+                	<span ng-if="empresa.basic.convenio_days == 1">hoy finaliza el periodo de {{ empresa.basic.convenio_duration }} mes(es)</span>
+    				<span ng-if="empresa.basic.convenio_days == 0">ya finalizó su periodo de {{ empresa.basic.convenio_duration }}</span>
+    				<span ng-if="empresa.basic.convenio_days > 1">le quedan {{ empresa.basic.convenio_days }} días</span>
+    				<button ng-if="empresa.basic.convenio_days <= 10" class="btn btn-sm btn-warning hint--bottom-right" data-toggle="modal" data-target="#modal-ampliar-convenio" aria-label="Amplia el tiempo de convenio">Ampliar
+                    </button>
+    		</strong>
+    	</div>
+
+    	<h3 id="e-title" class="page-header mt0">
+    		<span class="pull-left">
+    			{{empresa.basic.empresa_nombre}}
+
+                <span ng-if="empresa.basic.garantia.load">
+                    <small>( Garantía S/. {{ empresa.basic.garantia.rows.precio }} )</small>
+                </span>
+                <span ng-if="!empresa.basic.garantia.load">
+                    <small>( No se detectó garantía )</small>
+                </span>
+    		</span>
+    		<!-- Cambiar estado -->
+            <form id="frm-estado" method="post" class="pull-left">
+                <div class="form-group">
+                    <small ng-if="empresa.basic.preferencia_estado == 'P'">(PENDIENTE)</small>
+                    <button ng-if="empresa.basic.preferencia_estado == 'P'" type="button" class="btn btn-primary btn-sm" ng-click="activeCompany()" ng-disabled="activating">
+                        <span ng-if="!activating">Activar ahora</span>
+                        <span ng-if="activating"><i class="fa fa-refresh fa-spin fa-fw"></i> Activando</span>
+                    </button>
+                    <small ng-if="empresa.basic.preferencia_estado == 'X'" id="p-interno">(INTERNO)</small>
+                    <select ng-model="empresamain.preferencia_estado"  class="form-control input-sm" ng-if="empresa.basic.preferencia_estado != 'P' && empresa.basic.preferencia_estado != 'X'" ng-options="key as value for (key,value) in estados" ng-change="updateState()">
+                    </select>
+                </div>
+            </form>
+    		<!-- Entrevista -->
+            <div class="pull-right">
+                <span ng-if="empresa.basic.entrevistado == 'I' || empresa.basic.entrevistado == 'S'" class="label label-primary">{{(empresa.basic.entrevistado == 'I')?'No interesado':'Entrevistada'}}</span>
+                <div class="btn-group" ng-if="!(empresa.basic.entrevistado == 'I' || empresa.basic.entrevistado == 'S') && roles.interview == '1'" uib-dropdown>
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"
+                            id="btnDdInterview" uib-dropdown-toggle>
+                            <span ng-if="empresa.basic.entrevistado == 'P'">Pospuesto para el {{empresa.basic.entrevista_recordatorio}}</span>
+                            <span ng-if="empresa.basic.entrevistado != 'P'">Entrevistas</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right" role="menu" uib-dropdown-menu>
+                        <li><a href ng-click="changeInterviewState('S')">Establecer como Entrevistado</a></li>
+                        <li><a href ng-click="changeInterviewState('I')">Establecer en No Interesado</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href ng-click="postponeInterview()">Posponer Entrevista</a></li>
+                    </ul>
+                </div>
+            </div>
+    		<!-- Siguiente facturacion -->
+    		<div class="clearfix"></div>
+    	</h3>
+        <ul class="nav nav-tabs">
+            <li ng-repeat="t in tabs" ui-sref-active="active" ng-show="t.isVisible" ng-if="roles.check(t.rol_id)">
+                <a ui-sref="{{t.route}}">{{t.heading}}</a>
+            </li>
+        </ul>
+        <div ui-view></div>
+    </div>
+</div>

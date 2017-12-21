@@ -1,0 +1,258 @@
+<div ng-init="vm.defaultParams();vm.search()">
+	<div class="well well-sm mb0" style="background-color: #f8f8f8;">
+	    <form id="frm-lista-empresa" class="filter-form form-inline">
+	        <article>
+
+	<div class="row">
+		<div class="col-sm-5">
+			<div class="col-sm-12">
+            	<div class="col-sm-3">
+		            <div class="form-group form-group-sm" style="width: 100%; padding-top:5px;">
+		                <select class="filter-cbo form-control" style="width: 100%;" ng-model="vm.params.fechafiltro"  ng-change="vm.searchFilter()">
+		                    <option value="C">Creacion</option>
+		                    <option value="E">Eliminacion</option>
+		                </select>
+		            </div>
+            	</div>    
+            	<div class="col-sm-3">
+		            <div class="form-group form-group-sm" style="width: 100%; padding-top:5px;">
+		                <select class="filter-cbo form-control" style="width: 100%;" ng-model="vm.params.year" ng-options="year for year in vm.years track by year" ng-change="vm.searchFilter()">
+		                </select>
+		            </div>
+		        </div>
+		        <div class="col-sm-3">
+		            <div class="form-group form-group-sm" style="width: 100%; padding-top:5px;">
+		                <select class="filter-cbo form-control" style="width: 100%;" ng-model="vm.params.month" ng-options="(key*1) as value for (key,value) in vm.months" ng-change="vm.searchFilter()">
+		                </select>
+		            </div>
+		        </div>
+
+		        <div class="col-sm-3">
+
+		            <div class="form-group" style="width: 100%; padding-top:5px;" >
+		                <select style="width: 100%; " ng-model="vm.params.preferencia_estado" class="form-control input-sm" ng-change="vm.searchFilter()">
+		                    <option value="-">Estado</option>
+		                    <option value="A">ACTIVO</option>
+		                    <option value="S">INACTIVO</option>
+		                    <option value="E">ELIMINADO</option>
+		                    <option value="P">PENDIENTE</option>
+		                    <option value="X">INTERNO</option>
+		                </select>
+		            </div>
+
+		        </div>
+	        </div>
+            <div class="col-sm-12">
+            	<div class="col-sm-6">
+		            <div class="form-group " style="padding-top:5px; width: 100%;" >
+		                <select style="width: 100%;"  class="form-control input-sm" ng-model="vm.params.search_filter" ng-change="vm.changePlaceholder();vm.searchFilter()">
+		                    <option value="empresa_nombre">Empresa</option>
+		                    <option value="empresa_ruc">RUC</option>
+		                    <option value="representante">Representante</option>
+		                    <option value="empresa_rubro">Rubro</option>
+		                    <option value="encargado">Encargado Pago</option>
+		                    <option value="pbx">Nombre o Número Central</option>
+		                    <option value="empleado">Empleado</option>
+		                </select>
+		            </div>
+		        </div>
+		        <div class="col-sm-6">
+		            <div class="form-group" style="padding-top:5px; width: 100%;" >
+		                <input  style="width: 100%;" ng-if="(['representante','empleado','pbx']).indexOf(vm.params.search_filter) < 0" type="text" class="form-control width250 input-sm " placeholder="{{ vm.auxs.inputph }}" ng-model="vm.params.search_value" uib-typeahead="company as company.empresa_nombre for company in vm.filterCompanies($viewValue)" ng-keyup="($event.which === 13 || $event.keyCode === 13) && vm.searchFilter()">
+
+		                <input  style="width: 100%;" ng-if="(['representante','empleado','pbx']).indexOf(vm.params.search_filter) >= 0" class="form-control width250 input-sm" placeholder="{{ vm.auxs.inputph }}" uib-typeahead="item as item.nombre for item in vm.filterCustom($viewValue)" typeahead-on-select="vm.goToCompany()" typeahead-template-url="filterCustom.html" typeahead-min-length="2" ng-model="vm.selectedCompany">
+		            </div>
+		        </div>
+	        </div>
+		</div>
+		<div class="col-sm-3">
+
+
+			<div class="col-sm-12">
+				<div class="col-sm-6">
+		            <div class="form-group" style="padding-top:5px; width: 100%;">
+		                <select style="width: 100%;" class="form-control cbo-plan input-sm" ng-model="vm.params.plan" ng-options="plan.id as plan.nombre for plan in vm.planes" ng-change="vm.searchFilter()">
+		                </select>
+		            </div>
+		        </div>
+		        <div class="col-sm-6">
+		            <div class="form-group" style="padding-top:5px; width: 100%;">
+		                <select style="width: 100%;" class="form-control input-sm" ng-model="vm.params.preferencia_facturacion" ng-change="vm.searchFilter()">
+		                    <option value="-">CICLO</option>
+		                    <option value="MENSUAL">Mensual</option>
+		                    <option value="QUINCENAL">Quincenal</option>
+		                </select>
+		            </div>
+		        </div>
+	        </div>
+	        <div class="col-sm-12">
+	        	<div class="col-sm-6">
+		            <div class="form-group" style="padding-top:5px; width: 100%;">
+		                <select style="width: 100%;" class="form-control input-sm" ng-model="vm.params.preferencia_fiscal" ng-change="vm.searchFilter()">
+		                    <option value="-">FISCAL</option>
+		                    <option value="SI">Con Fiscal</option>
+		                    <option value="NO">Sin Fiscal</option>
+		                </select>
+		            </div>
+		        </div>
+		        <div class="col-sm-6">
+		            <div class="form-group" style="padding-top:5px; width: 100%;">
+		                <select style="width: 100%;" class="form-control input-sm" ng-model="vm.params.central" ng-change="vm.searchFilter()">
+		                    <option value="-">CENTRAL</option>
+		                    <option value="S">Con Central</option>
+		                    <option value="N">Sin Central</option>
+		                </select>
+		            </div>
+		        </div>
+	        </div>
+		</div>
+		<div class="col-sm-4">
+
+
+            <div class="col-sm-12">
+            	<div class="col-sm-6">
+		            <div class="form-group" style="padding-top:5px; width: 100%;">
+		                <select style="width: 100%;" ng-model="vm.params.factura_id" class="form-control input-sm" ng-change="vm.searchFilter()">
+		                    <option value="-">Deudores o No</option>
+		                    <option value="S">Deudores</option>
+		                    <option value="N">No Deudores</option>
+		                </select>
+		            </div>
+		        </div>
+		        <div class="col-sm-6">
+		            <div class="form-group" style="padding-top:5px; width: 100%;">
+		                <select style="width: 100%;" class="form-control input-sm" ng-model="vm.params.convenio" ng-change="vm.searchFilter()">
+		                    <option value="-">Convenio</option>
+		                    <option value="S">Si tiene convenio</option>
+		                    <option value="N">No tiene convenio</option>
+		                    <option value="C">Tuvo Convenio</option>
+		                </select>
+		            </div>
+		        </div>
+	        </div>
+	       	<div class="col-sm-12">
+	       		<div class="col-sm-4">
+		            <div class="form-group" style="padding-top:5px; width: 100%;">
+	                    <select style="width: 100%;" class="form-control input-sm" ng-model="vm.params.extras" ng-options="extras.id as extras.nombre for extras in vm.extras" ng-change="vm.searchFilter()"></select>
+		            </div>
+		        </div>
+		        <div class="col-sm-4">
+		            <div class="form-group" style="padding-top:5px; width: 100%;">
+		                <select style="width: 100%;" class="form-control input-sm" ng-model="vm.params.extrastipo" ng-change="vm.searchFilter()">
+		                    <option value="-">Extra Estado</option>
+		                    <option value="S">Si</option><!--SI-->
+		                    <option value="N">No</option><!--NO-->
+		                    <option value="I">No interesado</option><!--NO_INTERESADO-->
+		                    <option value="P">Pospuesto</option><!--POSPUESTO-->
+		                </select>
+		            </div>
+		        </div>
+
+		        <div class="col-sm-4">
+		            <!--<div class="form-group" style="padding-top:5px;">
+		                <button type="reset" class="btn btn-sm btn-submit" id="btn-clean-parameters" ng-click="vm.defaultParams();vm.search()">Limpiar</button>
+		            </div>-->
+		            <div class="form-group" style="padding-top:5px;">
+		                <button type="button" class="btn btn-sm btn-submit hint--top" aria-label="Actualizar Lista" id="btn-refresh-empresas" ng-click="vm.searchFilter();"><i class="fa fa-refresh fa-lg"></i></button>
+		            </div>
+	                <div class="form-group" style="padding-top:5px;" ng-if="vm.roles.check(8)"> <!-- empresa.export -->
+	                    <a href="#modal-exportar" class="btn btn-success btn-sm" id="btn-open-export-filter" data-toggle="modal" ng-click="vm.exportar();">
+	                        <i class="fa fa-file-excel-o"></i>
+	                    </a>
+	                </div>
+	            </div>
+	        </div>
+
+		</div>
+	</div>
+	        </article>
+	    </form>
+	</div>
+	<div class="row">
+		<div id="list-correspondencias-paginator" class="col-sm-12" ng-if="!loading">
+			<div class="pull-left pagination">
+				<li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ 1 + ((vm.params.pagina-1)*vm.params.limite) }}</span></li>
+				<li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">hasta</span></li>
+				<li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ vm.empresas.length + ((vm.params.pagina-1)*vm.params.limite) }}</span></li>
+				<li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">de</span></li>
+				<li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ vm.auxs.totalItems }}</span></li>
+				<li class="disabled  text-center"><span style="width: 150px;" aria-hidden="true">registros encontrados</span></li>
+			</div>
+			<ul uib-pagination boundary-links="true" total-items="vm.auxs.totalItems" ng-model="vm.params.pagina" max-size="5" class="pagination-sm pull-right" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="vm.search()" boundary-link-numbers="true" rotate="false" items-per-page="vm.params.limite"></ul>
+		</div>
+	</div>
+	<div class="table-responsive">
+	    <table class="table table-hover table-condensed mb90" id="lista-empresas">
+	        <thead>
+	            <tr style="">
+	                <th style="text-align: center; font-weight: bolder; width:4%">Estado</th>
+	                <th style="text-align: center; font-weight: bolder; width:22%">Empresa</th>
+	                <th style="text-align: center; font-weight: bolder; width:8%">Inicio</th>
+	                <th style="text-align: center; font-weight: bolder; width:15%">Comercial</th>
+	                <th style="text-align: center; font-weight: bolder; width:11%">Ruc</th>
+	                <th style="text-align: center; font-weight: bolder; width:13%">Encargado</th>
+	                <th style="text-align: center; font-weight: bolder; width:10%">Central</th>
+	                <th style="text-align: center; font-weight: bolder; width:10%">Plan</th>
+	                <th style="text-align: center; font-weight: bolder; width:2%" class="hidden-xs"></th>
+	                <th style="text-align: center; font-weight: bolder; width:2%" class="hidden-xs"></th>
+	                <th style="text-align: center; font-weight: bolder; width:4%"></th>
+	            </tr>
+	        </thead>
+	        <tbody id="tbody-companies">
+				<tr ng-if="vm.auxs.loading">
+	            	<td colspan="8"><i class="fa fa-circle-o-notch fa-spin fa-lg"></i> Cargando empresas...</td>
+	            </tr>
+			    <tr ng-if="!vm.auxs.loading" ng-repeat="row in vm.empresas">
+				    <td style="text-align: center;">{{ row.preferencia_estado }}</td>
+				    <td>
+				    	<div uib-popover-template="'popover.html'" popover-placement="right" popover-trigger="'mouseenter'">
+				    		<i ng-if="row.atencion_personalizada !== undefined && row.atencion_personalizada == 'S'" class="fa fa-star text-warning fa-fw"></i>
+				    		<i ng-if="row.passcard" class="fa fa-check text-success fa-fw"></i>
+
+				    		<a ng-if="vm.roles.check(9)" ng-href="empresa/{{ row.id }}/info" class="push-url" ng-class="row.atencion_personalizada !== undefined && row.atencion_personalizada == 'S' ? 'hint--top-right' : ''">{{ row.empresa_nombre }}</a>
+
+				    		<span ng-if="!vm.roles.check(9)">{{ row.empresa_nombre }}</span>
+				    	</div>
+				    </td>
+				    <td>{{ row.fecha_inicio }}</td>
+				    <td>{{ row.nombre_comercial }}</td>
+				    <td style="text-align: center;">{{ row.empresa_ruc }}</td>
+				    <td>{{ row.encargado }}</td>
+				    <td style="text-align: center;">{{ row.numero }}</td>
+				    <td style="text-align: center;">{{ row.plan }}</td>
+				    <td style="text-align: center;">{{ row.preferencia_facturacion }}</td>
+				    <td>
+				    	<span ng-if="row.preferencia_fiscal == 'SI'" class="hint--top-left" aria-label="Fiscal"><i class="fa fa-building fa-lg"></i></span>
+				    </td>
+				    <td>
+					    <div class="btn-group" uib-dropdown>
+						    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" uib-dropdown-toggle>
+						    	<span class="caret"></span>
+						    	<span class="sr-only">Toggle Dropdown</span>
+						    </button>
+						    <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+							    <li><a href ng-click="vm.gotoCorrespondencia(row.id, row.empresa_nombre)" class="push-url"><i class="fa fa-suitcase fa-fw"></i> Ir a correspondencia</a></li>
+							    <li ng-if="row.central == 'S'"><a href ng-click="vm.getCentral(row.central_id)"><i class="fa fa-phone fa-fw"></i> Ver Central</a></li>
+							    <!--<li ng-if="!row.passcard"><a href="#" class="addPasscard"><i class="fa fa-credit-card fa-fw"></i> Entregar pase</a></li>-->
+						    </ul>
+					    </div>
+				    </td>
+			    </tr>
+	        </tbody>
+	    </table>
+	</div>
+
+    <script type="text/ng-template" id="popover.html">
+		<p><b>Rubro: </b>{{ row.empresa_rubro }}</p>
+		<p><b>Siguiente fecha Facturación: </b>{{ row.siguiente_fecha_facturacion }}
+		<p ng-if="row.preferencia_cdr"><b>Central: </b> {{ row.preferencia_cdr }}</p>
+		<p ng-if="row.entrevistado === 'P'" class="mb0"><b>Postergado para el:</b> {{ row.entrevista_recordatorio</p>
+    </script>
+
+    <script type="text/ng-template" id="filterCustom.html">
+    	<a>
+    		<div><b>{{ match.label }}</b></div>
+    		<div><small><b>{{ match.model.empresa_nombre }}</b></small></div>
+    	</a>
+    </script>
+</div>

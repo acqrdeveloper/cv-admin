@@ -1,0 +1,161 @@
+<div class="row" ng-init="vm.methods.search()" ng-show="vm.main"><!---->
+    <div class="col-sm-12">
+        <div class="panel panel-default panel-body">
+            <form class="form-inline">
+                <div class="form-group form-group-sm">
+                    <select ng-disabled="vm.bandeja.auxs.validateLoading" class="filter-cbo form-control" ng-model="vm.searchParams.anio" ng-options="y for y in vm.lists.years" ng-change="vm.methods.filterData()"></select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <select ng-disabled="vm.auxs.validateLoading" class="filter-cbo form-control" ng-model="vm.searchParams.mes" ng-options="(key*1) as value for (key,value) in  vm.lists.months" ng-change="vm.methods.filterData()"></select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <select class="filter-cbo form-control" ng-model="vm.searchParams.empleado" ng-options="empleado.id as empleado.nombre for empleado in vm.lists.empleado" ng-change="vm.methods.filterData()" ng-disabled="vm.bandeja.auxs.validateLoading"></select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <select class="filter-cbo form-control" ng-model="vm.searchParams.asunto" ng-options="asunto.id as asunto.nombre for asunto in vm.lists.asunto" ng-change="vm.methods.filterData()" ng-disabled="vm.bandeja.auxs.validateLoading"></select>
+                </div>
+                <div class="form-group form-group-sm input-group">
+                    <input type="text" autocomplete="off" class="form-control" placeholder="Nombre de Empresa" ng-model="vm.auxs.selected" uib-typeahead="company as company.empresa_nombre for company in vm.methods.filterCompanies($viewValue, true)" typeahead-on-select="vm.searchParams.empresa_id = vm.auxs.selected.id; vm.methods.filterData();" ng-disabled="vm.auxs.validateLoading"> 
+                    <div class="input-group-btn" ng-if="vm.auxs.selected.id>0">
+                        <a href class="btn btn-sm btn-danger" ng-click="vm.methods.clearCompanies()"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <select class="filter-cbo form-control" ng-model="vm.searchParams.ciclo" ng-options="ciclo.value as ciclo.name for ciclo in vm.lists.ciclo" ng-change="vm.methods.filterData()" ng-disabled="vm.auxs.validateLoading"></select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <select class="filter-cbo form-control" ng-model="vm.searchParams.preferencia_estado" ng-options="state.value as state.name for state in vm.lists.estadosEmpresa" ng-change="vm.methods.filterData()" ng-disabled="vm.auxs.validateLoading"></select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <select class="filter-cbo form-control" ng-model="vm.searchParams.plan" ng-options="plan.id as plan.nombre for plan in vm.lists.planes" ng-change="vm.methods.filterData()" ng-disabled="vm.auxs.validateLoading"></select>
+                </div>
+                <div class="form-group form-group-sm" ng-if="vm.roles.check(92)">
+                    <button type="button" class="btn btn-sm btn-warning" ng-click="vm.methods.openMessage()">Enviar mensaje</button>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="col-sm-12" ng-if="!vm.bandeja.auxs.validateLoading">
+                <div class="pull-left pagination">
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ 1 + ((vm.searchParams.pagina-1)*vm.searchParams.limite) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">hasta</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ vm.data.length + ((vm.searchParams.pagina-1)*vm.searchParams.limite) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">de</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ vm.auxs.totalItems }}</span></li>
+                    <li class="disabled  text-center"><span style="width: 150px;" aria-hidden="true">registros encontrados</span>
+                    </li>
+                </div>
+                <ul ng-change="vm.methods.search()" uib-pagination boundary-links="true" total-items="vm.auxs.totalItems" ng-model="vm.searchParams.pagina" max-size="5" class="pagination-sm pull-right" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-link-numbers="true" rotate="false" items-per-page="vm.searchParams.limite">
+                </ul>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>DE</th>
+                    <th>A</th>
+                    <th>ASUNTO</th>
+                    <th>CREACION</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-center" ng-show="vm.bandeja.auxs.validateLoading">
+                    <td colspan="5"  ><i class="fa fa-refresh fa-spin"></i> Cargando...</td>
+                </tr>
+                <tr class="text-center" ng-show="!vm.bandeja.auxs.validateLoading && vm.bandeja.data.length <= 0 ">
+                    <td colspan="5">
+                        <i class="fa fa-warning text-warning"></i>
+                        <span class="text-muted"> no se encontraron registros.</span>
+                    </td>
+                </tr>
+                <tr ng-show="!vm.auxs.validateLoading" ng-repeat="row in vm.data">
+                    <td>
+                        <a href="empresa/{{row.empresa_id}}/mensajes">{{ row.empresa_nombre }}</a>
+                        <br>
+                        <small ng-if="row.asunto != 'H' && row.asunto != 'A'" class="text-capitalize text-muted"> {{ row.mensaje.substr( 0, 100 ) + ( row.mensaje.length > 100 ? ".................." : "" ) }}</small>
+                        <small ng-if="row.asunto == 'A'" class="text-capitalize text-muted"> Solicitud de Auditorio</small>
+                        <small ng-if="row.asunto == 'H'" class="text-capitalize text-muted"> Solicitud de Horas Extras</small>
+                    </td>
+                    <td>{{ vm.auxs.empleados[row.a] }}</td>
+                    <td>
+                        <span class="label label-primary" style="font-size: 10px;">{{ vm.auxs.asunto[row.asunto] }}</span>
+                    </td>
+                    <td>
+                        <span><i class="fa fa-clock-o"></i> {{ row.created_at }}</span>
+                    </td>
+                    <td class="text-center">
+                        <a ng-click="vm.methods.showDetail(row)" class="btn btn-circle btn-default hint--left" aria-label="VER MENSAJES" ng-if="vm.roles.check(93)">
+                            <i class="fa fa-arrow-right fa-lg text-warning"></i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row" ng-show="!vm.main">
+    <div class="col-sm-12">
+        <div class="panel panel-default panel-body">
+            <h4 class="text-muted"><a href="{{location.origin}}/detalle-empresa/{{ params_detalle.empresa_id }}">{{
+                params_detalle.empresa_nombre }}</a>
+                <span class="pull-right">
+                    <a ng-click="vm.bandeja.methods.clickHideView( 'main', 'detalle', 0, 0, 0 )"
+                       class="btn btn-circle btn-default hint--bottom"
+                       aria-label="CERRAR">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </span>
+            </h4>
+            <hr>
+            <div class="col-md-12">
+                <div class="row text-center">
+                    <form role="form" class="form-inline" ng-submit="vm.bandeja.methods.registerNote()">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <b><h5 class="text-muted text-left text-primary">NUEVA NOTA</h5></b>
+                                <div class="input-group">
+                                    <div class="input-group-btn">
+                                        <select ng-model="vm.bandeja.params.selectedCRM" class="form-control" style="border-top-left-radius:4px;border-bottom-left-radius:4px;" ng-options="crm as crm.nombre for crm in vm.bandeja.extras.listCrm track by crm.id"></select>
+                                        <textarea ng-disabled="vm.bandeja.params.selectedCRM.id=='-'" ng-model="vm.bandeja.params.txtNota" cols="100" rows="1" class="form-control" style="border-top-right-radius: 0;border-bottom-right-radius: 0;" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block" style="border-top-left-radius: 0;border-bottom-left-radius: 0;">guardar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th width="20%">EMPLEADO</th>
+                    <th width="10%">TIPO</th>
+                    <th width="55%">NOTA</th>
+                    <th width="15%">FECHA CREACION</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-center">
+                    <td colspan="4" ng-if="validateLoading"><i class="fa fa-refresh fa-spin"></i> Cargando...</td>
+                </tr>
+                <tr class="text-center">
+                    <td ng-if="validateFailedLoading" colspan="4">
+                        <i class="fa fa-warning text-warning"></i>
+                        <span class="text-muted"> no se encontraron registros.</span>
+                    </td>
+                </tr>
+                <tr ng-if="!validateLoading" ng-repeat="row in vm.bandeja.datadetalle">
+                    <td>{{ row.empleado }}</td>
+                    <td><span class="label label-warning">{{ row.crm_tipo }}</span></td>
+                    <td>{{ row.nota }}</td>
+                    <td><span><i class="fa fa-clock-o"></i> {{ row.fecha_creacion }}</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

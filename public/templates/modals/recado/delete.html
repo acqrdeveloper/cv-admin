@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$ctrl.close()"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="modalRecadoDel">CONFIRMACIÓN PARA ELIMINAR EL RECADO</h4>
+</div>
+<div class="modal-body">
+    <form id="frm-del-recado" ng-submit="$ctrl.delete()">
+        <h5>{{$ctrl.row.empresa_nombre}}</h5>
+        <h6 class="text-muted"><i class="fa fa-suitcase fa-fw"></i> <span>{{$ctrl.row.contenido_paquete}}</span></h6>
+        <div class="form-group form-group-sm">
+            <textarea name="observacion" placeholder="Escriba aqui su observación" class="form-control" ng-model="$ctrl.params.observacion"></textarea>
+        </div>
+        <hr>
+        <div class="text-right">
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="$ctrl.close()">Cerrar</button>
+            <button class="btn btn-danger btn-sm" type="submit">
+                <i class="fa fa-trash-o"></i> Eliminar
+            </button>
+        </div>
+    </form>
+</div>

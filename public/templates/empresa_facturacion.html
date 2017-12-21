@@ -1,0 +1,153 @@
+<div class="row" ng-init="methods.init()">
+    <div class="col-sm-12 mt20" ng-show="showForm">
+        <ng-include src="'/templates/modals/factura/create.html'"></ng-include>
+    </div>
+    <div class="col-sm-12 mt10" ng-show="!showForm">
+        <div class="panel panel-default panel-body">
+            <form class="form-inline col-md-12">
+                <div class="control-group form-inline">
+                    <div class="form-group form-group-sm">
+                        <select ng-disabled="validateLoading" class="filter-cbo form-control" ng-model="params.anio" ng-options="year for year in yearspay track by year" ng-change="methods.applyChange()"></select>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <select ng-disabled="validateLoading" class="filter-cbo form-control" ng-model="params.mes" ng-options="(key*1) as value for (key,value) in months" ng-change="methods.applyChange()"></select>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <select ng-disabled="validateLoading" class="filter-cbo form-control" ng-model="params.estado" ng-options="tp as tp.name for tp in estadofactura track by tp.value" ng-change="methods.applyChange()"></select>
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <button ng-disabled="validateLoading" ng-click="methods.applyChange()" type="button" aria-label="FILTRAR" class="btn btn-sm btn-default btnRefreshData hint--top"><i class="fa fa-refresh fa-fw fa-lg"></i></button>
+                </div>
+                <button ng-disabled="validateLoading" type="button" class="btn-nueva-factura btn btn-sm btn-primary" ng-click="methods.showForm()" ng-if="roles.check(44)">Nueva Factura</button>
+                <button ng-disabled="validateLoading" class="btn btn-sm btn-warning hint--top" data-hint="Administrar items extras" ng-click="methods.showTemporal()" ng-if="roles.check(45)">
+                    <i class="fa fa-gears"></i> Extras
+                </button>
+                <div class="form-group form-group-sm">
+                    <button ng-disabled="validateLoading" ng-click="methods.clickExportar()" type="button" aria-label="EXPORTAR" class="btn btn-sm btn-success hint--bottom" ng-if="roles.check(46)"><i class="fa fa-file-excel-o"></i></button>
+                </div>
+            </form>
+        </div>
+        <table class="table table-striped table-hover table-condensed mb90" ng-show="params.reporte.value!='ownmissing'">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Comprobante</th>
+                    <th style="text-align: center;">Número</th>
+                    <th style="text-align: center;">Emision</th>
+                    <th style="text-align: center;">Vencimiento</th>
+                    <th style="text-align: center;">IGV</th>
+                    <th style="text-align: center;">Monto</th>
+                    <th style="text-align: center;">Total</th>
+                    <th style="text-align: center;">Estado</th>
+                    <th style="text-align: center;">Deuda</th>
+                    <th style="text-align: center;"></th>
+                    <th style="text-align: center;"></th>
+                    <th style="text-align: center;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="searching">
+                    <td colspan="12" class="text-center"><i class="fa fa-refresh fa-spin"></i> Obteniendo facturas</td>
+                </tr>
+                <tr ng-if="!searching" ng-repeat="r in empresa.facturacion">
+                    <td>{{r.comprobante}}</td>
+                    <td style="text-align: center;" ng-show="r.comprobante === 'FACTURA' || (r.comprobante === 'BOLETA' && r.numero.length > 0)">{{r.serie+"-"+r.numero}}</td>
+                    <td ng-if="r.comprobante === 'PROVICIONAL'">&nbsp;</td>
+                    <td style="text-align: center;" ng-show="r.comprobante === 'BOLETA'"">
+                        <a href ng-if="r.docnum.length<=0" ng-click="methods.addInvoiceNumber(r)">Agregar Número</a>
+                        <span ng-if="r.docnum.length>0">{{r.docnum}}</span>
+                    </td>
+                    <td style="text-align: center;">{{r.fecha_emision}}</td>
+                    <td style="text-align: center;">{{r.fecha_vencimiento}}</td>
+                    <td style="text-align: right;">{{(r.monto-(r.monto/1.18)) |number:2}}</td>
+                    <td style="text-align: right;">{{(r.monto/1.18) |number:2}}</td>
+                    <td style="text-align: right;">{{r.monto}}</td>
+                    <td style="text-align: center;">{{r.estado}}</td>
+                    <td style="text-align: right;">{{(r.monto - r.pago)|number:2}}</td>
+                    <td style="text-align: center;">
+                        <span ng-show="r.su_state=='S'" uib-tooltip="{{r.su_info}}">
+            				<i class="fa fa-check fa-lg text-success co-entregado"></i>
+            			</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <span ng-show="r.mail_send>0">
+            				<i class="fa fa-send fa-lg"></i> {{ " ( "+r.mail_send+" ) "}}
+            			</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <button class="open-reveal-pay btn btn-xs btn-warning" data-first="S" ng-if="r.estado === 'PENDIENTE' && roles.check(47)" ng-click="methods.pay(r)">
+                            <i class="fa fa-credit-card"></i> Pagar
+                        </button>
+                        <div class="btn-group dropdown" uib-dropdown="" style="">
+                            <button type="button" class="btn btn-xs btn-default dropdown-toggle" uib-dropdown-toggle="" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                                <span class="sr-only">Split button!</span>
+                            </button>
+                            <ul class="dropdown-menu-right"    uib-dropdown-menu="" role="menu" aria-labelledby="split-button" style="margin-bottom: 150px;">
+                                <li role="menuitem" ng-show="roles.check(121) && r.numero.length <= 0">
+                                    <a href ng-click="methods.changeInvoiceType(r)">
+                                        <i class="fa fa-refresh"></i> Cambiar Tipo de Comprobante
+                                    </a>
+                                </li>
+								<li role="menuitem" ng-show="r.pago>0 && roles.check(54)" ng-click="methods.getPaymentDetail(r)">
+									<a href="#">
+										<i class="fa fa-usd fa-fw"></i> Ver Pagos
+									</a>
+								</li>
+							    <li role="menuitem" ng-show="r.comprobante=='FACTURA' && r.su_state=='S' && roles.check(55)" ng-click="methods.setNota( r.id  )">
+							    	<a href="#">
+							    		<i class="fa fa-sticky-note fa-fw"></i> Generar Nota
+							    	</a>
+							    </li>
+                                <li ng-show="r.estado=='PENDIENTE' && r.su_state!='S' && roles.check(48)">
+                                    <a href ng-click="methods.editInvoice(r)">
+                                        <i class="fa fa-pencil fa-fw"></i> Editar Documento
+                                    </a>
+                                </li>
+							    <li role="menuitem" ng-click="methods.getComprobanteDetalle(r.id)" ng-if="roles.check(49)"><!--FACTURA BOLETAS-->
+							    	<a href="#">
+							    		<i class="fa fa-tasks fa-fw"></i> Ver Detalles de Factura
+							    	</a>
+							    </li>
+								<li role="menuitem" ng-click="methods.getComprobanteHistorial(r.id)" ng-if="roles.check(50)"><!--FACTURA BOLETAS-->
+									<a href="#">
+										<i class="fa fa-book fa-fw"></i> Historial Factura
+									</a>
+								</li>
+								<li role="menuitem" ng-click="methods.setAnulado(r.id)" ng-show="r.estado!='ANULADA' && r.su_state!='S' && roles.check(51)"><!--FACTURA BOLETAS-->
+									<a href="#">
+										<i class="fa fa-ban fa-fw"></i> Anular Documento
+									</a>
+								</li>
+
+                                <li class="divider" ng-show="r.comprobante=='FACTURA' && r.estado!='ANULADA' && r.su_state!='S'"></li><!--FACTURA-->
+                                <li role="menuitem" ng-click="methods.sendSunat( r.id  )" ng-show="r.comprobante=='FACTURA' && r.estado!='ANULADA' && r.su_state!='S' && roles.check(52)"><!--FACTURA-->
+                                    <a href="#"> 
+                                        <i class="fa fa-file-pdf-o text-danger fa-fw"></i> Enviar a Sunat
+                                    </a>
+                                </li>
+
+
+								<li class="divider" ng-show="r.comprobante=='FACTURA'"></li><!--FACTURA-->
+							 	<li role="menuitem" ng-show="r.comprobante=='FACTURA' && roles.check(53)"><!--FACTURA-->
+							 		<a target="_BLANK" href="../../{{ 'comprobante/pdf/' + r.empresa_ruc + '/' + r.comprobante + '/' + r.serie + '/' + r.numero }}"> <i class="fa fa-file-pdf-o text-danger fa-fw"></i> Ver Factura PDF
+							 		</a>
+								</li>
+							 	<li role="menuitem" ng-show="r.comprobante=='FACTURA' && r.estado!='ANULADA' &&  r.su_state=='S' && roles.check(56)"><!--FACTURA-->
+							 		<a href="#" ng-click="methods.openFacturaMail(r.id)" >
+							 			<i class="fa fa-send fa-fw"></i> Enviar factura PDF
+							 		</a>
+							 	</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                	<td colspan="6"></td>
+                	<td style="text-align: right; font-weight: bolder; font-size: 115%;">{{ empresa.facturacion|sumByKey:'monto'|number:2 }}</td>
+                	<td colspan="3"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

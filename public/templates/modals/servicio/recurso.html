@@ -1,0 +1,38 @@
+<div class="modal-header">
+	<button type="button" class="close" ng-click="ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="modalCorrespondencia">Agregar/Quitar {{ ctrl.title }} </h4>
+</div>
+<div class="modal-body">
+    <form class="form-horizontal" ng-submit="ctrl.addResource()">
+        <div ng-if="ctrl.params.tipo === 1">
+            <div class="form-group">
+                <label class="control-label col-xs-3">{{ ctrl.title }}</label>
+                <div class="col-xs-8">
+                    <input class="form-control" type="text" ng-model="ctrl.params.monto" placeholder="Ingresa la cantidad a aumentar" ng-disabled="ctrl.sending">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label checkbox col-sm-3 label-sm" for="facturar-e"> <input type="checkbox" ng-model="ctrl.params.facturar" id="facturar-e" ng-true-value="'on'" ng-true-value="'off'" ng-disabled="ctrl.sending"> Facturar</label>
+                <label class="control-label checkbox col-sm-3 label-sm" for="facturar-next" ng-hide="ctrl.params.recurso == 'cantidad_copias' || ctrl.params.recurso == 'cantidad_impresiones'"> <input type="checkbox" ng-model="ctrl.params.next" id="facturar-next" ng-true-value="'on'" ng-true-value="'off'" ng-disabled="ctrl.sending"> Siguiente Mes</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-xs-3">Observación</label>
+                <div class="col-xs-8">
+                    <textarea class="form-control" ng-model="ctrl.params.observacion" ng-disabled="ctrl.sending"></textarea>
+                </div>
+            </div>
+        </div>
+        <div ng-if="ctrl.params.tipo === -1">
+            <div class="form-group">
+                <div class="col-xs-12">
+                    <input class="form-control" type="text" ng-model="ctrl.params.monto" placeholder="Ingresa la cantidad a quitar" ng-disabled="ctrl.sending">
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="text-right">
+            <button type="button" class="btn btn-sm btn-default" ng-click="ctrl.close()" ng-disabled="ctrl.sending">Cancelar</button>
+            <button class="btn btn-sm btn-primary" ng-disabled="ctrl.sending"><i class="fa fa-check"></i> Aceptar</button>
+        </div>
+    </form>
+</div>

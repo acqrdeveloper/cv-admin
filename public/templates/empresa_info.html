@@ -1,0 +1,269 @@
+<div class="page mt10 fade in" ng-controller="DetInfoCtrl as vm">
+    <form method="post" action="#" id="frm-edit-enterprise" class="form-horizontal">
+        <div class="row">
+            <div class="col-sm-12 mb15">
+                <a href="/contrato/{{ empresa.id }}" target="_blank" class="btn"><i class="fa fa-eye"></i> Ver Contrato</a>
+                <a href class="btn btn-warning btn-sm pull-right modal-credentials"
+                       data-toggle="modal" ng-if="vm.roles.check(22)" ng-click="vm.openCrediential()"><i class="fa fa-envelope-o"></i> Enviar Credenciales</a>
+            </div>
+            <div class="col-xs-12 datos-empresa">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h5 class="panel-title">Empresa &nbsp;
+                            <a ng-if="vm.roles.check(23) && !vm.isEdit" ng-click="vm.edit()" href="#" id="btn-edit-emp" class="btn btn-default btn-sm tab-edit" ref="open"><i class="fa fa-edit"></i> Editar
+                            </a>&nbsp;
+                            <a ng-if="vm.roles.check(23) && vm.isEdit" ng-click="vm.cancelEdit()" href="#" id="btn-edit-emp" class="btn btn-default btn-sm tab-edit" ref="open"><i class="fa fa-edit"></i> Cancelar
+                            </a>&nbsp;
+                            <a ng-if="vm.roles.check(24) && vm.isEdit" ng-click="vm.update()" href="#" id="btn-edit-emp" class="btn btn-default btn-sm tab-edit" ref="open"><i class="fa fa-edit"></i> Actualizar
+                            </a>
+                        </h5>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-2 control-label">Nombre</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="empresa_nombre" 
+                                       class="form-control {{!vm.isEdit?'form-control-readonly':''}}"
+                                       ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating"
+                                       required
+                                       ng-model="vm.info.empresa_nombre">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-2 control-label">Comercial</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="nombre_comercial"
+                                       class="form-control {{!vm.isEdit?'form-control-readonly':''}}"
+                                       ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating"
+                                       required
+                                       ng-model="vm.info.nombre_comercial">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-2 control-label">Dirección</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="empresa_direccion"
+                                       class="form-control {{!vm.isEdit?'form-control-readonly':''}}"
+                                       ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating"
+                                       required
+                                       ng-model="vm.info.empresa_direccion">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-2 control-label">RUC</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="empresa_ruc"
+                                       class="form-control {{!vm.isEdit?'form-control-readonly':''}}"
+                                       ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating"
+                                       required
+                                       ng-model="vm.info.empresa_ruc">
+                            </div>
+                            <label class="col-sm-2 control-label">Fiscal</label>
+                            <div class="col-sm-4">
+                                <input type="text" ng-show="!vm.isEdit" data-field="fiscal"
+                                       class="form-control {{!vm.isEdit?'form-control-readonly':''}}"
+                                       ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating"
+                                       value="{{vm.info.preferencia_fiscal}}">
+
+                                <div class="btn-group btn-group-sm" ng-show="vm.isEdit" data-toggle="buttons">
+                                    <label class="btn btn-default {{vm.info.preferencia_fiscal == 'SI'?'active':''}}" ng-class="">
+                                        <input type="radio" name="preferencia_fiscal" ng-model="vm.info.preferencia_fiscal" value="SI" ng-checked="vm.info.preferencia_fiscal === 'SI'" />
+                                        SI
+                                    </label>
+                                    <label
+                                        class="btn btn-default {{vm.info.preferencia_fiscal == 'NO'?'active':''}}" ng-class="">
+                                        <input type="radio" name="preferencia_fiscal" ng-model="vm.info.preferencia_fiscal" value="NO" ng-checked="vm.info.preferencia_fiscal === 'NO'">
+                                        NO
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-2 control-label">Rubro</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="empresa_rubro"
+                                       class="form-control {{!vm.isEdit?'form-control-readonly':''}}"
+                                       ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating"
+                                       required
+                                       ng-model="vm.info.empresa_rubro">
+                            </div>
+                            <label class="col-sm-2 control-label">Carrera</label>
+                            <div class="col-sm-4">
+                                <select ng-model="vm.info.carrera"
+                                        class="form-control {{!vm.isEdit?'form-control-readonly':''}}"
+                                        ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating"
+                                        required ><option value="N">No</option><option value="A">Abogado</option></select>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm mb0">
+                            <label class="col-sm-2 control-label" for="asesor">Asesor(a)</label>
+                            <div class="col-sm-4">
+                                <input type="text"
+                                       ng-model="vm.info.asesor"
+                                       class="form-control {{!vm.isEdit?'form-control-readonly':''}}"
+                                       value="{{ vm.info.asesor }}" 
+                                       ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating" >
+                                <select name="asesor" class="form-control hidden"></select>
+                            </div>
+                            <label class="col-sm-2 control-label">Página web</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="url_web" class="form-control {{!vm.isEdit?'form-control-readonly':''}}" ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating" ng-model="vm.info.url_web">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 datos-empresa">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h5 class="panel-title">Encargado de Pago &nbsp;
+                            <a ng-if="vm.roles.check(23) && !vm.isEdit" ng-click="vm.edit()" href="#" id="btn-edit-emp" class="btn btn-default btn-sm tab-edit" ref="open"><i class="fa fa-edit"></i> Editar
+                            </a>&nbsp;
+                            <a ng-if="vm.roles.check(23) && vm.isEdit" ng-click="vm.cancelEdit()" href="#" id="btn-edit-emp" class="btn btn-default btn-sm tab-edit" ref="open"><i class="fa fa-edit"></i> Cancelar
+                            </a>&nbsp;
+                            <a ng-if="vm.roles.check(23) && vm.isEdit" ng-click="vm.update()" href="#" id="btn-edit-emp" class="btn btn-default btn-sm tab-edit" ref="open"><i class="fa fa-edit"></i> Actualizar
+                            </a>
+                        </h5>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-2 control-label">Nombre</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control {{!vm.isEdit?'form-control-readonly':''}}" 
+                                       ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating"
+                                       name="fac_nombre" require ng-model="vm.info.fac_nombre">
+                            </div>
+                            <label class="col-sm-2 control-label">Apellido</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control {{!vm.isEdit?'form-control-readonly':''}}" 
+                                       ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating"
+                                       name="fac_apellido" require
+                                       ng-model="vm.info.fac_apellido">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="control-label col-sm-2">Correo</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control {{!vm.isEdit?'form-control-readonly':''}}" 
+                                       ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating"
+                                       name="fac_email" ng-model="vm.info.fac_email">
+                            </div>
+                            <label class="control-label col-sm-2">DNI</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control {{!vm.isEdit?'form-control-readonly':''}}" 
+                                       ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating"
+                                       name="fac_dni" ng-model="vm.info.fac_dni">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="control-label col-sm-2">Domicilio</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control {{!vm.isEdit?'form-control-readonly':''}}" 
+                                       ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating"
+                                       name="fac_domicilio" ng-model="vm.info.fac_domicilio">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm mb0">
+                            <label class="control-label col-sm-2">Celular</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control {{!vm.isEdit?'form-control-readonly':''}}" 
+                                       ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating"
+                                       name="fac_celular" ng-model="vm.info.fac_celular">
+                            </div>
+                            <label class="control-label col-sm-2">Teléfono</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control {{!vm.isEdit?'form-control-readonly':''}}" 
+                                       ng-readonly="!vm.isEdit" ng-disabled="vm.isUpdating"
+                                       name="fac_telefono" ng-model="vm.info.fac_telefono">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <button class="btn btn-warning btn-sm hidden"><i class="fa fa-check"></i> Actualizar</button>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        <div class="col-xs-12 datos-empresa" id="box-rep">
+            <div class="panel panel-info">
+		        <div class="panel-heading">
+		            <h4 class="panel-title" style="line-height:2;">Representante(s)
+					<button class="btn btn-sm btn-default btn-orange pull-right" ng-if="vm.roles.check(25)" ng-click="vm.agent.openModal('create')"><i class="fa fa-plus-circle"></i> Nuevo</button></h4>
+		            <div class="clearfix"></div>
+		        </div>
+                <div class="panel-body pb0">
+		            <table class="table table-condensed table-hover table-striped mb0">
+		                <thead>
+		                	<tr>
+		                		<th>Nombre</th>
+		                		<th>Apellido</th>
+		                		<th>Domicilio</th>
+		                		<th>Correo</th>
+		                		<th>DNI</th>
+		                		<th>Teléfonos</th>
+		                		<th>Opciones</th>
+		                	</tr>
+		                </thead>
+		                <tbody id="tbl-agents">
+		                    <tr ng-if="vm.info.representantes<=0">
+		                        <td colspan="6">Esta empresa no tiene representantes registrados.</td>
+		                    </tr>
+		                    <tr ng-repeat="representante in vm.info.representantes">
+		                        <td><span ng-if="representante.is_login === 'S'" class="text-success mr10 hint--bottom" aria-label="Correo usado para el logeo"><i class="fa fa-lock fa-lg"></i></span> {{ representante.nombre }}</td>
+		                        <td>{{ representante.apellido }}</td>
+		                        <td>{{ representante.domicilio }}</td>
+		                        <td>{{ representante.correo }}</td>
+		                        <td>{{ representante.dni }}</td>
+		                        <td>{{ representante.telefonos }}</td>
+		                        <td>
+		                            <button class="btn btn-xs del-employe btn-primary hint--left" ng-click="vm.agent.openModal('create', representante)" aria-label="Editar datos" ng-if="vm.roles.check(26)"><i class="fa fa-pencil"></i></button>
+                                <button class="btn btn-xs del-employe btn-primary hint--left" ng-click="vm.agent.openModal('login', representante)" ng-if="representante.is_login === 'N' && vm.roles.check(26)" aria-label="Usar correo para logeo"><i class="fa fa-lock"></i></button>
+		                            <button class="btn btn-xs del-employe btn-danger hint--left" ng-click="vm.agent.openModal('delete', representante)" ng-if="vm.info.representantes.length>1 && representante.is_login === 'N' && vm.roles.check(26)" aria-label="Borrar representante"><i class="fa fa-trash"></i></button>
+		                        </td>
+		                    </tr>
+		                </tbody>
+		            </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h4 class="panel-title" style="line-height:2;">Lista de Empleado
+			<button class="btn btn-sm btn-default btn-orange pull-right" ng-if="vm.roles.check(27)" ng-click="vm.employee.openModal('create')"><i class="fa fa-plus-circle"></i> Nuevo</button></h4>
+            <div class="clearfix"></div>
+        </div>
+        <div class="panel-body mb0">
+            <table class="table table-condensed table-hover table-striped mb0">
+                <thead>
+                	<tr>
+                		<th>Nombre</th>
+                		<th>Apellido</th>
+                		<th>E-mail</th>
+                		<th>DNI</th>
+                		<th>Estado</th>
+                		<th>Opciones</th>
+                	</tr>
+                </thead>
+                <tbody id="tbl-employees">
+                    <tr ng-if="vm.info.empleados<=0">
+                        <td colspan="6">Esta empresa no tiene empleados registrados.</td>
+                    </tr>
+                    <tr ng-repeat="empleado in vm.info.empleados">
+                        <td>{{ empleado.nombre }}</td>
+                        <td>{{ empleado.apellido }}</td>
+                        <td>{{ empleado.correo }}</td>
+                        <td>{{ empleado.dni }}</td>
+                        <td><span>{{ empleado.estado }}</span></td>
+                        <td>
+                            <button class="btn btn-xs del-employe btn-primary" ng-click="vm.employee.openModal('create',empleado)" ng-if="vm.roles.check(28)"><i class="fa fa-pencil"></i></button>
+                            <button class="btn btn-xs del-employe btn-danger" ng-click="vm.employee.openModal('delete', empleado)" ng-if="vm.roles.check(29)"><i class="fa fa-trash"></i></button> </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

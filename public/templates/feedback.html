@@ -1,0 +1,99 @@
+<div class="row" ng-class="screenfeedback">
+    <div class="col-sm-12">
+        <div class="panel panel-default panel-body">
+            <!--<h6 class="text-muted">FEEDBACK HISTORIAL</h6>-->
+            <div class="row">
+                <form class="form-inline col-sm-12">
+                
+                    <div class="form-group form-group-sm">
+                        <select class="filter-cbo form-control" ng-model="filters.selectedYear"
+                                ng-options="year as year.name for year in filters.years track by year.id"
+                                ng-change="methods.applyChange()">
+                        </select>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <select class="filter-cbo form-control" ng-model="filters.selectedMonth"
+                                ng-options="month as month.name; for month in filters.months track by month.value"
+                                ng-change="methods.applyChange()">
+                        </select>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <select ng-change="methods.applyChange()" class="form-control" ng-model="selectedTipo"
+                                ng-options="tipo as tipo.name; for tipo in arrayTipo track by tipo.value ">
+                        </select>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <button ng-click="methods.clickExportar()" type="button" aria-label="EXPORTAR"
+                                class="btn btn-success hint--bottom"><i class="fa fa-file-excel-o"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div id="list-correspondencias-paginator" class="col-sm-12" ng-if="!validateLoading">
+                <div class="pull-left pagination">
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ 1 + ((params.pagina-1)*20) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">hasta</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ data.length + ((params.pagina-1)*20) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">de</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ totalItems }}</span></li>
+                    <li class="disabled  text-center"><span style="width: 150px;" aria-hidden="true">registros encontrados</span>
+                    </li>
+                </div>
+                <ul ng-change="methods.applyChange()" uib-pagination boundary-links="true" total-items="totalItems"
+                    ng-model="params.pagina" max-size="5" class="pagination-sm pull-right" previous-text="&lsaquo;"
+                    next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-link-numbers="true"
+                    rotate="false" items-per-page="20">
+                </ul>
+            </div>
+        </div>
+        <table class="table table-striped table-hover table-condensed mb90">
+            <thead>
+            <tr>
+                <th width="30%">EMPRESA</th>
+                <th width="60%">CONTENIDO</th>
+                <th width="10%">FECHA CREACION</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center">
+                <td colspan="9" ng-if="validateLoading"><i class="fa fa-refresh fa-spin"></i> Cargando...</td>
+            </tr>
+            <tr class="text-center">
+                <td ng-if="validateFailedLoading" colspan="9">
+                    <i class="fa fa-warning text-warning"></i>
+                    <span class="text-muted"> no se encontraron registros.</span>
+                </td>
+            </tr>
+            <tr ng-if="!validateLoading;" ng-repeat=" row in data">
+                <td>
+                    <i ng-if="row.movil == 'android' " class="fa fa-android fix-size type-{{ row.movil }}"></i>
+                    <i ng-if="row.movil == 'ios' " class="fa fa-apple fix-size-sm type-{{ row.movil }}"></i>
+                    <i ng-if="row.movil != 'android' && row.movil != 'ios' " class="fa fa-desktop fix-size-sm"></i>
+                    <span>{{ row.empresa_nombre }}</span>
+                </td>
+                <td ng-hide="custom">
+                    <span uib-dropdown on-toggle="toggled(open)">
+                      <a href id="simple-dropdown" uib-dropdown-toggle>
+                        Ver {{ row.tipo == 'S' ? 'Sugerencia' : 'Queja' }}
+                      </a>
+                      <ul class="dropdown-menu" style="padding: 5px 5px !important;position: inherit;" uib-dropdown-menu
+                          aria-labelledby="simple-dropdown">
+                        <li style="width: 600px !important;">{{ row.sugerencia }}</li>
+                      </ul>
+                    </span>
+                </td>
+                <td>
+                    <small>{{ row.fecha_creacion }}</small>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>

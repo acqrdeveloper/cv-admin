@@ -1,0 +1,13 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$ctrl.close()"><span
+                aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Importar lista de invitados</h4>
+</div>
+<div class="modal-body">
+    <h5>Sube la lista de invitados para el evento <b>{{ $ctrl.row.evento_nombre }}</b></h5>
+	<input type="file" id="file_invitados" class="form-control">
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default btn-sm" ng-click="$ctrl.close()">Cancelar</button>
+    <button type="button" class="btn btn-primary btn-sm" ng-click="$ctrl.import()"><i class="fa fa-upload"></i> Cargar lista</button>
+</div>

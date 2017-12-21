@@ -1,0 +1,43 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$ctrl.close()"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="modalEmpresaSeguimientoNuevaNota">CRM Nueva Nota</h4>
+</div>
+<div class="modal-body">
+    <form id="frm-crm" class="form-horizontal" ng-submit="$ctrl.sendCrm()">
+        <div class="form-group">
+            <label for="nota" class="control-label col-sm-3">Para</label>
+            <div class="col-sm-8">
+                <select class="form-control" ng-model="$ctrl.auxs.to" ng-options="u.nombre for u in $ctrl.auxs.usuarios"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="femision" class="control-label col-sm-3">Tipo</label>
+            <div class="col-sm-4">
+                <select class="filter-cbo form-control" ng-model="$ctrl.params.crm_tipo_id" ng-options="crm as crm.nombre for crm in $ctrl.extras.listCrm track by crm.id"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="femision" class="control-label col-sm-3">Fecha de Programación</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" uib-datepicker-popup ng-model="$ctrl.params.fecha" is-open="$ctrl.auxs.isOpenCalendar" readonly="" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" ng-click="$ctrl.openCalendar()" datepicker-options="$ctrl.auxs.calendarOpts" ng-disabled="$ctrl.auxs.sending" />
+            </div>
+            <div class="col-sm-2">
+                <select ng-disabled="$ctrl.auxs.sending" class="filter-cbo form-control" ng-model="$ctrl.params.hora" ng-options="h for h in $ctrl.extras.horas"></select>
+            </div>
+            <div class="col-sm-2">
+                <select ng-disabled="$ctrl.auxs.sending" class="filter-cbo form-control" ng-model="$ctrl.params.minuto" ng-options="m for m in $ctrl.extras.minutos"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="nota" class="control-label col-sm-3">Nota</label>
+            <div class="col-sm-8">
+                <textarea ng-model="$ctrl.params.nota" class="form-control input-sm" id="nota" required="" ng-disabled="$ctrl.auxs.sending"></textarea>
+            </div>
+        </div>
+        <hr>
+        <div class="text-right">
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="$ctrl.close()" ng-disabled="$ctrl.auxs.sending"><i class="fa fa-times"></i> Cerrar</button>
+            <button class="btn btn-sm btn-warning" type="submit" ng-disabled="$ctrl.auxs.sending || $ctrl.params.nota === ''"><i class="fa fa-check"></i> Crear</button>
+        </div>
+    </form>
+</div>

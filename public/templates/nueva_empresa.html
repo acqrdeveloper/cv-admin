@@ -1,0 +1,246 @@
+<form class="form-horizontal" id="frm-create-company" ng-submit="vm.fn.create()">
+  <article>
+    <div class="panel panel-info" id="panel-company">
+        <div class="panel-heading">
+            <i class="fa fa-building"></i> Datos de la Empresa
+        </div>
+        <div class="panel-body">
+            <div class="form-group form-group-sm">
+                <div class="col-sm-5 col-md-3">
+                    <div class="input-group">
+                        <input type="text" ng-model="vm.params.empresa_ruc" id="emp_ruc" class="form-control" placeholder="RUC" maxlength="11" ng-disabled="vm.auxs.searching" ng-required="true" autocomplete="off" ng-keyup="$event.keyCode === 13 && vm.fn.searchByRuc()">
+                        <span class="input-group-btn">
+                            <span class="btn-group">
+                                <button id="btnGetDataSunat" type="button" class="btn btn-sm btn-info" aria-label="extraer datos SUNAT" ng-click="vm.fn.searchByRuc()" ng-disabled="vm.params.empresa_ruc.length != 11 || vm.auxs.searching"><i class="fa fa-download"></i></button>
+                            </span>
+                        </span>
+                    </div>
+                    <i class="form-control-feedback fa fa-spinner fa-spin fa-lg hidden"></i>
+                </div>
+                <div class="col-sm-7 col-md-9">
+                    <input type="text" ng-model="vm.auxs.empresa_selected" id="emp_nombre" autocomplete="off" class="form-control" placeholder="Nombre de Empresa" uib-typeahead="e as e.rsocial for e in vm.fn.searchByName($viewValue)" typeahead-min-length="5" typeahead-wait-ms="1500" typeahead-on-select="vm.fn.setCompany()" ng-value="vm.params.rsocial" ng-required="true">
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <div class="col-sm-6">
+                    <input type="text" ng-model="vm.params.empresa_direccion" id="emp_direccion" class="form-control" placeholder="Dirección" ng-disabled="vm.auxs.searching" ng-required="true">
+                </div>
+                <div class="col-sm-3">
+                    <input type="text" ng-model="vm.params.empresa_rubro" id="emp_rubro" class="form-control" placeholder="Rubro" ng-disabled="vm.auxs.searching" ng-required="true">
+                </div>
+                <div class="col-sm-3">
+                    <select ng-model="vm.params.carrera" id="emp_carrera" class="form-control" ng-disabled="vm.auxs.searching" ng-required="true"><option value="N">No</option><option value="A">Abogado</option></select>
+                </div>
+            </div>
+            <div class="form-group form-group-sm mb0">
+                <div class="col-sm-6">
+                    <input id="idnombrecomercial" type="text" ng-model="vm.params.nombre_comercial" class="form-control" placeholder="Nombre Comercial" ng-disabled="vm.auxs.searching" ng-required="true">
+                </div>
+                <div class="col-sm-2" id="box-fiscal">
+                    <div class="checkbox-inline">
+                        <label>
+                            <input type="checkbox" ng-model="vm.params.preferencia_fiscal" ng-true-value="'SI'" ng-false-value="'NO'"> Es Fiscal
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-4" id="nro-partida" ng-show="vm.params.preferencia_fiscal === 'SI'">
+                    <input type="text" class="form-control" placeholder="Nro. de partida" ng-model="vm.params.preferencia_fiscal_nro_partida" ng-required="vm.params.preferencia_fiscal === 'SI'">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-info" id="panel-billing">
+        <div class="panel-heading">
+            <i class="fa fa-credit-card"></i> Responsable de Facturación
+        </div>
+        <div class="panel-body">
+            <div class="form-group form-group-sm">
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" ng-model="vm.params.fac_nombre" id="fac_nombre" placeholder="Nombre" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true">
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" ng-model="vm.params.fac_apellido" id="fac_apellido" placeholder="Apellido" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true">
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" ng-model="vm.params.fac_domicilio" id="fac_domicilio" placeholder="Domicilio" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true">
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" ng-model="vm.params.fac_email" id="fac_email" placeholder="Correo electrónico" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true">
+                </div>
+            </div>
+            <div class="form-group form-group-sm mb0">
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" ng-model="vm.params.fac_dni" id="fac_dni" placeholder="DNI" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true">
+                </div>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" ng-model="vm.params.fac_celular" id="fac_celular" placeholder="Celular" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true">
+                </div>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" ng-model="vm.params.fac_telefono" id="fac_telefono" placeholder="Teléfono" ng-disabled="vm.auxs.searching || vm.auxs.sending">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-info" id="panel-legal">
+        <div class="panel-heading">
+            <i class="fa fa-gavel"></i> Representante Legal
+        </div>
+        <div class="panel-body">
+            <div class="form-group form-group-sm">
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" ng-model="vm.params.representante.nombre" placeholder="Nombre" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true">
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" ng-model="vm.params.representante.apellido" placeholder="Apellido" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true">
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" ng-model="vm.params.representante.domicilio" placeholder="Domicilio" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true">
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" ng-model="vm.params.representante.correo" placeholder="Correo electrónico" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true">
+                </div>
+            </div>
+            <div class="form-group form-group-sm mb0">
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" ng-model="vm.params.representante.dni" placeholder="DNI" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true">
+                </div>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" ng-model="vm.params.representante.telefonos" placeholder="Telefonos (separado por comas))" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-info" id="panel-contract">
+        <div class="panel-heading">
+            <i class="fa fa-file-text-o"></i> Contrato
+        </div>
+        <div class="panel-body">
+            <div class="col-sm-6 no-padding">
+                <div class="col-sm-4">
+                    <label for="slc_plan" class="pika-title">Plan</label><br>
+                    <select id="slc_plan" class="form-control" ng-model="vm.auxs.selected_plan" ng-options="plan as plan.nombre for plan in vm.lists.planes" ng-change="vm.fn.applyPlan()" ng-disabled="vm.params.convenio === 'S' || vm.auxs.searching || vm.auxs.sending" ng-required="true"><option>Seleccione</option></select>
+                </div>
+                <div class="col-sm-5" ng-if="vm.auxs.selected_plan.tipo === 'CW'">
+                    <label for="num_cantidad" class="pika-title">Cantidad de Espacios</label><br>
+                    <input id="num_cantidad" class="form-control" type="number" min="1" ng-model="vm.auxs.cw_cantidad" ng-keyup="vm.fn.applyPlan()" ng-change="vm.fn.applyPlan()" ng-required="vm.auxs.selected_plan.tipo === 'CW'">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group-sm">
+                    <label class="pika-title">Fecha de Contrato:</label><br>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" ng-model="vm.params.contrato.fecha_inicio" uib-datepicker-popup is-open="vm.auxs.cal1" ng-click="vm.fn.openCalendar1()" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true" datepicker-options="vm.auxs.dateOption">
+                        </div>
+                        <div class="col-sm-6" style="padding-right:25px;">
+                            <input type="text" class="form-control" ng-model="vm.params.contrato.fecha_fin" uib-datepicker-popup is-open="vm.auxs.cal2" ng-click="vm.fn.openCalendar2()" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true" datepicker-options="vm.auxs.dateOption">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">&nbsp;</div>
+            <div class="col-sm-6 no-padding">
+                <div class="form-group-sm">
+                    <div class="col-sm-4">
+                        <label for="plan" class="pika-title">Comprobante</label><br>
+                        <select class="form-control" ng-model="vm.params.preferencia_comprobante" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true">
+                            <option value="BOLETA">Boleta</option>
+                            <option value="FACTURA">Factura</option>
+                            <option value="PROVICIONAL">Provicional</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-5">
+                        <label for="slc_ciclo" class="pika-title">Ciclo de Facturacion</label><br>
+                        <select id="slc_ciclo" class="form-control" ng-model="vm.params.preferencia_facturacion" ng-options="ciclo.value as ciclo.name for ciclo in vm.lists.ciclos" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true"><option>Seleccione</option></select>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group-sm">
+                    <label for="chk_convenio" class="pika-title">Aplicar Convenio</label><br>
+                    <label class="checkbox-inline col-sm-3">
+                        <input id="chk_convenio" type="checkbox" ng-model="vm.params.convenio" ng-true-value="'S'" ng-false-value="'F'" ng-click="vm.fn.applyConvenio()" ng-disabled="vm.auxs.selected_plan.id <= 0 || vm.auxs.searching || vm.auxs.sending">
+                        Convenio
+                    </label>
+                    <div class="col-sm-6">
+                        <select id="slc_convenio_duration" class="form-control" ng-model="vm.params.convenio_duration" ng-disabled="vm.params.convenio === 'N' || vm.auxs.searching || vm.auxs.sending" ng-required="vm.params.convenio === 'S'">
+                            <option value="1">1 mes</option>
+                            <option value="6">6 meses</option>
+                            <option value="12">1 año</option>
+                        </select>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="col-sm-12">&nbsp;</div>
+            <div class="col-sm-6 no-padding">
+                <div class="form-group-sm">
+                    <div class="col-sm-5">
+                        <label for="slc_asesor" class="pika-title">Asesor</label><br>
+                        <select id="slc_asesor" class="form-control" ng-model="vm.auxs.selected_asesor" ng-options="a as a.nombre for a in vm.lists.asesores" ng-disabled="vm.auxs.searching || vm.auxs.sending" ng-required="true"><option>Seleccione</option></select>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="col-sm-6 no-padding" ng-if="vm.auxs.selected_plan.promocion > 0">
+                <div class="form-group-sm">
+                    <div class="col-sm-7">
+                        <label class="pika-title">Aplicar Promoción:</label><br>
+                        <div class="checkbox">
+                            <label for="chk_promocion">
+                                <input id="chk_promocion" type="checkbox" ng-model="vm.params.promo" ng-true-value="'S'" ng-false-value="'N'" ng-click="vm.fn.applyPromocion()" ng-disabled="vm.auxs.searching || vm.auxs.sending"> Promoción
+                                S/. {{ vm.auxs.selected_plan.promocion }} x {{ vm.auxs.selected_plan.promocion_mes }} mes(es)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-info" id="panel-resume" ng-if="vm.auxs.selected_plan.id>0">
+      <div class="panel-heading">
+        <span><i class="fa fa-list"></i> Resumen</span>
+        <div class="btn-group pull-right">
+          <a href ng-click="vm.fn.openServiceModal()" class="btn btn-xs btn-primary" ng-disabled="vm.params.convenio === 'S'"><i class="fa fa-plus-circle"></i> Agregar Servicio Extra</a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="panel-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="width: 65%;">Concepto</th>
+              <th style="width: 25%;" class="text-right">Precio</th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="item in vm.auxs.details">
+              <td>{{ item.descripcion }}</td>
+              <td class="text-right">{{ item.fac_precio|number:2 }}</td>
+              <td>
+                  <button class="btn btn-danger btn-xs" type="button" ng-if="(['E','D','C']).indexOf(item.tipo)>=0" ng-click="vm.fn.removeItem($index)"><i class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td class="text-right">S/. {{ vm.auxs.details|sumByKey:'fac_precio'|number:2 }}</td>
+              <td>&nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <hr>
+    <div class="pull-right">
+        <button type="submit" class="btn btn-warning btn-sm" ng-disabled="vm.fn.checkRequirements() || vm.auxs.searching || vm.auxs.sending"><i class="fa fa-check fa-lg"></i> Procesar</button>
+        <div class="clearfix"></div>
+    </div>
+    <br>
+  </article>
+</form>

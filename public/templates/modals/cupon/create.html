@@ -1,0 +1,47 @@
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title">Crear cupón</h4>
+</div>
+<div class="modal-body">
+	<form class="form-horizontal" ng-submit="ctrl.send()">
+
+		<div class="form-group form-group-sm">
+			<label class="control-label col-sm-3 label-title" for="plan">Fecha inicio</label>
+			<div class="col-sm-5">
+				<div class="input-group">
+                    <input ng-model="ctrl.params.finicio" type="text" class="form-control" uib-datepicker-popup="yyyy-MM-dd" is-open="ctrl.cal1" ng-required="true" ng-disabled="ctrl.sending"/>
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-sm  btn-default" ng-click="ctrl.openCalendar1()" ng-disabled="ctrl.sending">
+                            <i class="fa fa-calendar"></i></button>
+                    </div>
+                </div>
+			</div>
+		</div>
+		<div class="form-group form-group-sm">
+			<label class="control-label col-sm-3 label-title" for="plan">Fecha fin</label>
+			<div class="col-sm-5">
+                <div class="input-group">
+                    <input ng-model="ctrl.params.ffin" type="text" class="form-control" uib-datepicker-popup="yyyy-MM-dd" is-open="ctrl.cal2" ng-required="true" ng-disabled="ctrl.sending"/>
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-sm  btn-default" ng-click="ctrl.openCalendar2()" ng-disabled="ctrl.sending">
+                            <i class="fa fa-calendar"></i></button>
+                    </div>
+                </div>
+			</div>
+		</div>
+		<div class="form-group form-group-sm">
+			<label class="control-label col-sm-3 label-title" for="plan">Monto</label>
+			<div class="col-sm-5">
+				<input type="text" ng-model="ctrl.params.monto" class="form-control" ng-required="true" ng-disabled="ctrl.sending">
+			</div>
+		</div>
+		<hr>
+		<div class="text-right">
+			<button type="button" class="btn btn-sm btn-default" data-dismiss="modal" ng-click="ctrl.close()" ng-disabled="ctrl.sending">Cancelar</button>
+			<button class="btn btn-sm btn-warning btn-submit" ng-disabled="ctrl.sending">
+				<span ng-if="ctrl.sending"><i class="fa fa-refresh fa-spin"></i> Generarando</span>
+				<span ng-if="!ctrl.sending"><i class="fa fa-refresh"></i> Generar cupón</span>
+			</button>
+		</div>
+	</form>
+</div>

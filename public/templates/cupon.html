@@ -1,0 +1,84 @@
+<div ng-controller="CuponCtrl as vm" ng-init="vm.fn.filterSearch()">
+	<div class="well well-sm mb0">
+		<div class="row">
+			<form method="post" class="form-inline col-sm-12">
+				<div class="form-group form-group-sm input-group">
+					<input type="text" autocomplete="off" class="form-control width250" placeholder="Nombre de Empresa" ng-model="vm.aux.selected_company" uib-typeahead="company as company.empresa_nombre for company in vm.fn.filterCompanies($viewValue, 1)" typeahead-on-select="(vm.params.empresa_id = vm.aux.selected_company.id) && vm.fn.filterSearch()"> 
+					<div class="input-group-btn" ng-if="vm.params.empresa_id>0">
+						<a href class="btn btn-sm btn-danger" ng-click="vm.fn.clearCompanies()"><i class="fa fa-times"></i></a>
+					</div>
+				</div>
+				<div class="form-group form-group-sm">
+					<select class="form-control" ng-model="vm.params.aniouso" ng-options="y for y in vm.aux.years" ng-change="vm.fn.filterSearch()">
+					</select>
+				</div>
+				<div class="form-group form-group-sm">
+					<select class="form-control" ng-model="vm.params.mesuso" ng-options="(key*1) as value for (key,value) in vm.aux.months" ng-change="vm.fn.filterSearch()">
+					</select>
+				</div>
+				<div class="form-group form-group-sm">
+					<select class="form-control" ng-model="vm.params.usado" ng-change="vm.fn.filterSearch()">
+						<option value="-">Todos</option>
+						<option value="0">No usuados</option>
+						<option value="1">Usados</option>
+					</select>
+				</div>
+				<div class="form-group" ng-if="vm.roles.check(62)">
+			        <input type="button" id="btn-nuevo" class="btn btn-primary btn-sm" value="Nuevo" ng-click="vm.fn.openForm()">
+			    </div>
+				<div class="form-group">
+		            <button ng-click="vm.fn.filterSearch()" type="button" class="btn btn-sm btn-default btnRefreshData hint--top" aria-label="Actualizar Lista" id="btnRefreshRecado"><i class="fa fa-refresh fa-fw fa-lg"></i></button>
+		        </div>
+			</form>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12" ng-if="!loading">
+			<div class="pull-left pagination">
+				<li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ 1 + ((vm.params.pagina-1)*vm.params.limite) }}</span></li>
+				<li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">hasta</span></li>
+				<li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ vm.data.length + ((vm.params.pagina-1)*vm.params.limite) }}</span></li>
+				<li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">de</span></li>
+				<li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ vm.aux.table.total }}</span></li>
+				<li class="disabled  text-center"><span style="width: 150px;" aria-hidden="true">registros encontrados</span></li>
+			</div>
+			<ul uib-pagination boundary-links="true" total-items="vm.aux.table.total" ng-model="vm.params.pagina" max-size="5" class="pagination-sm pull-right" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="vm.fn.search()" boundary-link-numbers="true" rotate="false" items-per-page="vm.params.limite"></ul>
+		</div>
+	</div>
+	<div class="table-responsive">
+		<table class="table table-striped table-hover table-condensed mb90" id="tbl-correspondencia">
+			<thead>
+				<tr>
+					<th>Código</th>
+					<th>Fec. Creación</th>
+					<th>Monto</th>
+					<th>Válido</th>
+					<th>Usado por</th>
+					<th>Creado por</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody id="tbody-correspondencias">
+				<tr ng-if="vm.aux.searching">
+					<td class="text-center" colspan="5"><i class="fa fa-refresh fa-spin fa-fw"></i> Cargando...</td>
+				</tr>
+				<tr ng-if="!vm.aux.searching && vm.aux.table.rows.length <= 0">
+					<td class="text-center" colspan="5"><i class="fa fa-info-circle fa-fw"></i> No se encontraron registros.</td>
+				</tr>
+				<tr ng-if="!vm.aux.searching" ng-repeat="row in vm.aux.table.rows">
+					<td>{{ row.codigo }}</td>
+					<td>{{ row.created_at }}</td>
+					<td>{{ row.monto }}</td>
+					<td>{{ row.finicio + ' - ' + row.ffin }}</td>
+					<td ng-if="row.usado == 1">{{ row.empresa_nombre }}<br><small>{{row.updated_at}}</small></td>
+					<td ng-if="row.usado == 0">-</td>
+
+					<td>{{ row.usuario }}</td>
+					<td class="options">
+						<button class="btn btn-xs btn-danger" ng-if="row.usado == 0 && vm.roles.check(63)" ng-click="vm.fn.delete(row.id)"><i class="fa fa-trash"></i></button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

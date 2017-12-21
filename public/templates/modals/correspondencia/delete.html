@@ -1,0 +1,20 @@
+<div class="modal-header">
+	<button type="button" class="close" ng-click="$ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="modalCorrespondenciaDel">Eliminar Correspondencia</h4>
+</div>
+<div class="modal-body">
+	<form id="frm-del-correspondencia" ng-submit="$ctrl.delete()">
+		<h5>{{ $ctrl.row.empresa_nombre }}</h5>
+		<h6 class="text-muted"><i class="fa fa-suitcase fa-fw"></i><span>{{ $ctrl.row.asunto }}</span></h6>
+		<div class="form-group form-group-sm">
+			<textarea name="observacion" placeholder="Escriba aqui su observación" class="form-control" ng-model="$ctrl.params.observacion" ng-disabled="$ctrl.sending"></textarea>
+		</div>
+		<hr>
+		<div class="form-group text-right mb0">
+			<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="$ctrl.close()" ng-disabled="$ctrl.sending">Cerrar</button>
+			<button type="submit" class="btn btn-danger btn-sm" ng-disabled="!($ctrl.params.observacion.length>0 && $ctrl.row.id>0)" ng-disabled="$ctrl.sending">
+				<i class="fa fa-trash"></i> Eliminar
+			</button>
+		</div>
+	</form>
+</div>

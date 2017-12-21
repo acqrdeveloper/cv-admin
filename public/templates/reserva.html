@@ -1,0 +1,140 @@
+<div ng-controller="ReservaCtrl as vm">
+    <div class="well well-sm mb0">
+        <div class="row" >
+            <form class="form-inline col-sm-12">
+                <div class="form-group form-group-sm">
+                    <select class="filter-cbo form-control" ng-model="vm.params.anio" ng-options="year for year in vm.auxs.years track by year" ng-change="vm.fn.searchByFilter()">
+                    </select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <select class="filter-cbo form-control" ng-model="vm.params.mes" ng-options="(key*1) as value for (key,value) in vm.auxs.months" ng-change="vm.fn.searchByFilter()">
+                    </select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <select class="filter-cbo form-control" ng-model="vm.params.dia" ng-options="(d.id*1) as d.value for d in vm.auxs.days" ng-change="vm.fn.searchByFilter()">
+                    </select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <select class="form-control" ng-model="vm.params.local_id" ng-options="local.id as local.nombre for local in vm.auxs.locales" ng-change="vm.fn.filterOffices();vm.fn.searchByFilter();">
+                    </select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <select class="form-control" ng-model="vm.params.modelo_id" ng-options="modelo.id as modelo.nombre for modelo in vm.auxs.modelos" ng-change="vm.fn.filterOffices();vm.fn.searchByFilter();">
+                    </select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <select class="form-control" ng-model="vm.params.oficina_id" ng-options="oficina.id as ( 'Sala ' + oficina.nombre + ' Piso ' + oficina.piso_id )  for oficina in vm.auxs.oficinas" ng-change="vm.fn.searchByFilter()">
+                    </select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <select name="estado" class="form-control" ng-model="vm.params.estado" ng-options="key as value for (key,value) in vm.auxs.estados" ng-change="vm.fn.searchByFilter()">
+                        <option value="-">Todos</option>
+                    </select>
+                </div>
+                <div class="form-group form-group-sm input-group">
+                    <input type="text" id="autoc-empresa-reserva" autocomplete="off" class="form-control width250" placeholder="Nombre de Empresa" ng-model="vm.auxs.selected" uib-typeahead="company as company.empresa_nombre for company in vm.fn.filterCompanies($viewValue, 1)" typeahead-on-select="(vm.params.empresa_id = vm.auxs.selected.id) && vm.fn.searchByFilter()"> 
+                    <div class="input-group-btn" ng-if="vm.auxs.selected.id>0">
+                        <a href class="btn btn-sm btn-danger" ng-click="vm.fn.clearFilter();vm.fn.searchByFilter();"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button ng-click="vm.fn.searchByFilter()" class="btn btn-sm btn-default btnRefreshData hint--bottom" aria-label="Actualizar Lista"><i class="fa fa-refresh fa-fw fa-lg"></i></button>
+                </div>
+                <div class="form-group" > <!-- empresa.export -->
+                    <a href class="btn btn-success btn-sm" id="btn-open-export-filter" data-toggle="modal" ng-click="vm.fn.exportar();">
+                        <i class="fa fa-file-excel-o"></i>
+                    </a>
+                </div>
+                <div class="form-group" ng-if="vm.roles.check(81)">
+                    <button class="btn btn-primary btn-sm" ng-click="vm.fn.openCreate()">Nueva Reserva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive mt20">
+        <table class="table table-striped table-hover table-condensed mb90">
+            <thead id="idTheadAuditorios">
+            <tr>
+                <th style="width:27%">Empresa</th>
+                <th style="width:3%"><acronym title="Smart TV">Smart TV</acronym></th>
+                <th style="width:7%">Cochera</th>
+                <th style="width:22%">Lugar</th>
+                <th class="text-center" style="width:13%">Hora</th>
+                <th class="text-center" style="width:9%"><acronym>Fec Registro</acronym></th>
+                <th class="text-center" style="width:9%"><acronym>Fec Reserva</acronym></th>
+                <th class="text-center" style="width:3%">Estado</th>
+                <th style="width:10%"></th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="vm.auxs.loading">
+                    <td colspan="8"><i class="fa fa-refresh fa-spin fa-fw"></i> Cargando...</td>
+                </tr>
+                <tr ng-if="!vm.auxs.loading" ng-repeat="row in vm.data">
+                    <td>
+                        <a ui-sref="empresa({empresaID:row.empresa_id})">
+                            <span>{{ row.empresa_nombre }}</span>
+                            <span class="help-block mb0" ng-switch="row.movil">
+                            <i ng-switch-when="android" class="fa fa-android fix-size type-{{ row.movil }}"></i>
+                            <i ng-switch-when="ios" class="fa fa-android fix-size type-{{ row.movil }}"></i>
+                            <i ng-switch-when="N" ng-class="(row.creado_por === 'Cliente')?'fa fa-desktop fix-size-sm':'fa fa-user fix-size-sm'"></i>
+                            {{ row.creado_por }}
+                            </span>
+                        </a>
+                    </td>
+                    <td>{{ row.proyector }}</td>
+                    <td class="text-center" ng-switch="row.cochera_nombre">
+                        <b ng-switch-when="NO">{{ row.cochera_nombre }}</b>
+                        <b ng-switch-default>{{ row.cochera_nombre }}/{{row.placa}}</b>
+                    </td>
+                    <td class="data-reserve">{{ row.local_nombre }}<br>Piso {{ row.piso_id }} - {{ row.oficina_nombre }}<br><b>{{ row.modelo_nombre }}</b></td>
+                    <td class="text-center">{{ row.hora_inicio.substr(0,5) }} - {{ row.hora_fin.substr(0,5) }}</td>
+                    <td class="text-center">{{ row.created_at.substr(0,16) }}</td>
+                    <td class="text-center">{{ row.fecha_reserva }}</td>
+                    <td class="text-center" ng-switch="row.estado">
+                        <span class="badge hint--left" ng-class="{'badge-success':row.estado==='A', 'badge-danger':row.estado==='E', 'badge-warning':row.estado === 'P', 'badge-primary':row.estado === 'J'}" aria-label="{{(row.estado==='A'?'Activo':(row.estado==='E'?'Eliminado':(row.estado==='P'?'Pendiente':(row.estado==='J'?'Justicado':'Por confirmar'))))}}">&nbsp;</span>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group dropdown btn-group-xs" role="group" aria-label="Reserve Options">
+                            <button type="button" class="btn btn-default" ng-click="vm.fn.openEdit(row)" ng-if="vm.roles.check(82)">
+                                <i class="fa fa-pencil fa-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-default" ng-if="!vm.roles.check(82)">
+                                <i class="fa fa-cogs fa-lg"></i>
+                            </button>
+                            <div class="btn-group" role="group" uib-dropdown>
+                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"
+                                        aria-expanded="false"  uib-dropdown-toggle>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu" uib-dropdown-menu>
+                                    <li ng-if="([2,3,5]).indexOf(row.modelo_id)>=0  && vm.roles.check(86)">
+                                       <a href ng-click="vm.fn.openModal(row,'import_list')"><i class="fa fa-upload fa-fw"></i> Cargar lista de invitados</a> 
+                                    </li>
+                                    <li title="Ver observaciones de la reserva si los hubiera" ng-if="vm.roles.check(83)">
+                                        <a href class="reserve-obs" ng-click="vm.fn.openModal(row,'obs')"><i class="fa fa-eye fa-fw"></i> Observaciones</a>
+                                    </li>
+                                    <li title="Ver Historial" ng-if="vm.roles.check(84)">
+                                        <a href class="reserve-history" ng-click="vm.fn.openModal(row, 'history')"><i class="fa fa-book fa-fw"></i> Ver Historial</a>
+                                    </li>
+                                    <li ng-if="(['P','J']).indexOf(row.estado) >= 0 && vm.roles.check(87)">
+                                        <a href ng-click="vm.fn.active(row.id)"><i class="fa fa-check-circle fa-fw"></i>Activar</a>
+                                    </li>
+                                    <li ng-if="row.estado == 'P' && vm.roles.check(88)">
+                                        <a href ng-click="vm.fn.justify(row.id)"><i class="fa fa-check-circle-o fa-fw"></i>Justificar</a>
+                                    </li>
+                                    <li ng-if="row.estado == 'C' && vm.roles.check(89)">
+                                        <a href ng-click="vm.fn.confirmar(row.id)"><i class="fa fa-check-circle-o fa-fw"></i>Confirmar</a>
+                                    </li>
+                                    <li title="Eliminar" ng-if="row.estado != 'E' && vm.roles.check(85)">
+                                        <a href class="del-r text-danger" ng-click="vm.fn.openModal(row, 'delete')"><i class="fa fa-trash-o fa-fw"></i> Eliminar</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

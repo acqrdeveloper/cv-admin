@@ -1,0 +1,14 @@
+<div class="modal-header">
+	<button type="button" class="close" aria-label="Close" ng-click="$ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="modalEmployee">Establecer correo</h4>
+</div>
+<div class="modal-body">
+	<form id="frm-otros-empleados" ng-submit="$ctrl.setLogin()">
+		<p>¿Está seguro de establecer el correo <b>{{ $ctrl.params.correo }}</b> del representante <b>{{$ctrl.params.nombre}} {{$ctrl.params.apellido}}</b> como nuevo logeo?</p>
+		<hr>
+		<div class="mb0 text-right">
+			<button type="button" class="btn btn-sm btn-default" ng-click="$ctrl.close()" ng-disabled="$ctrl.sending">Cancelar</button>
+			<button type="submit" class="btn btn-sm btn-warning"><i class="fa fa-check" ng-disabled="$ctrl.sending"></i> Guardar</button>
+		</div>
+	</form>
+</div>

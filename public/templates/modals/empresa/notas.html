@@ -1,0 +1,59 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$ctrl.close()"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="modalEmpresaPago">Nota de Crédito</h4>
+</div>
+<div class="modal-body">
+    <pre><b>Monto de la Factura:</b> {{$ctrl.comprobante.monto}}</pre>
+    <hr/>
+    <form id="frm-nota" class="form-horizontal" ng-submit="$ctrl.sendNota()">
+        <div class="form-group">
+            <label for="femision" class="control-label col-sm-3">Tipo de Nota</label>
+            <div class="col-sm-8">
+                <label class="radio-inline"><input type="radio" ng-model="$ctrl.params.tipo" value="DEBITO" ng-disabled="$ctrl.auxs.sending || $ctrl.debitOpcion" ng-change="$ctrl.getConceptos()"> DEBITO</label>
+                <label class="radio-inline"><input type="radio" ng-model="$ctrl.params.tipo" value="CREDITO" ng-disabled="$ctrl.auxs.sending" ng-change="$ctrl.getConceptos()"> CREDITO</label>
+            </div>
+        </div>
+        <!--
+        <div class="form-group" ng-if="$ctrl.params.tipo !== '-'">
+            <label for="femision" class="control-label col-sm-3">Fecha de emisión</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" uib-datepicker-popup ng-model="$ctrl.params.fecha_emision" is-open="$ctrl.auxs.isOpenCalendar" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" ng-click="$ctrl.openCalendar()" datepicker-options="$ctrl.auxs.calendarOpts" ng-disabled="$ctrl.auxs.sending"/>
+            </div>
+        </div>-->
+        <div class="form-group" ng-if="$ctrl.params.tipo !== '-'">
+            <label for="femision" class="control-label col-sm-3">Factura Nº</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" ng-readonly="true" ng-value="$ctrl.data.comprobante.numero" ng-disabled="$ctrl.auxs.sending"/>
+            </div>
+        </div>
+        <div class="form-group" ng-if="$ctrl.params.tipo !== '-'">
+            <label for="monto" class="control-label col-sm-3">Monto</label>
+            <div class="col-sm-4 form-input">
+                <div class="input-group">
+                    <span class="input-group-addon">S/.</span>
+                    <input type="text" class="form-control input-sm" id="amount-warranty" ng-model="$ctrl.params.monto" required="" ng-disabled="$ctrl.auxs.sending || $ctrl.params.anular === 'si' ">
+                </div>
+            </div>
+            <div class="col-sm-5" ng-if="$ctrl.params.tipo == 'CREDITO'">
+                <label class="checkbox-inline"><input type="checkbox" id="anular-op" ng-model="$ctrl.params.anular" ng-true-value="'si'" ng-false-value="'no'" ng-click="$ctrl.notaCreditoAnularFactura()" ng-disabled="$ctrl.auxs.sending"> Anular toda la factura</label>
+            </div>
+        </div>
+        <div class="form-group" ng-if="$ctrl.params.tipo !== '-'">
+            <label for="discrepancia" class="control-label col-sm-3">Discrepancia</label>
+            <div class="col-sm-9">
+                <select class="form-control" ng-model="$ctrl.params.discrepancia" required="" ng-options="concepto.id as concepto.nombre for concepto in $ctrl.auxs.conceptos" ng-disabled="$ctrl.auxs.sending"></select>
+            </div>
+        </div>
+        <div class="form-group" ng-if="$ctrl.params.tipo !== '-'">
+            <label for="observacion" class="control-label col-sm-3">Observación</label>
+            <div class="col-sm-9">
+                <textarea ng-model="$ctrl.params.observacion" class="form-control input-sm" id="observacion" required="" ng-disabled="$ctrl.auxs.sending"></textarea>
+            </div>
+        </div>
+        <hr>
+        <div class="text-right">
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="$ctrl.close()" ng-disabled="$ctrl.auxs.sending"><i class="fa fa-times"></i> Cerrar</button>
+            <button class="btn btn-sm btn-warning" type="submit" ng-disabled="$ctrl.auxs.sending || ($ctrl.sendNotaRequire() === false) || $ctrl.params.tipo === '-'|| $ctrl.params.discrepancia === ''"><i class="fa fa-check"></i> Crear</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,66 @@
+<div class="modal-header">
+	<button type="button" class="close" ng-click="ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="modalCorrespondencia">Agregar/Quitar Servicio </h4>
+</div>
+<div class="modal-body">
+    <form class="form-horizontal" ng-submit="ctrl.add()">
+        <div class="form-group">
+            <label class="control-label col-xs-3">Concepto</label>
+            <div class="col-xs-8">
+                <input type="text" ng-model="ctrl.params.concepto" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-3">Meses</label>
+            <div class="col-xs-5">
+                <select class="form-control" ng-model="ctrl.params.mes">
+                    <option ng-value="-1">Eterno</option>
+                    <option ng-value="1">01 Mes</option>
+                    <option ng-value="2">02 Mes</option>
+                    <option ng-value="3">03 Mes</option>
+                    <option ng-value="4">04 Mes</option>
+                    <option ng-value="5">05 Mes</option>
+                    <option ng-value="6">06 Mes</option>
+                    <option ng-value="7">07 Mes</option>
+                    <option ng-value="8">08 Mes</option>
+                    <option ng-value="9">09 Mes</option>
+                    <option ng-value="10">10 Meses</option>
+                    <option ng-value="11">11 Meses</option>
+                    <option ng-value="12">1 Año</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-3">Tipo</label>
+            <div class="col-xs-3">
+                <select class="form-control" ng-model="ctrl.params.tipo">
+                    <option value="E">Extra</option>
+                    <option value="D">Descuento</option>
+                    <option value="C">Combo</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group" ng-show="ctrl.params.tipo === 'C'">
+            <label class="control-label col-xs-3">Plan</label>
+            <div class="col-xs-8">
+                <div class="input-group">
+                    <select ng-model="ctrl.auxs.selected_plan" ng-options="p.nombre for p in ctrl.auxs.planes" class="form-control" ng-change="ctrl.params.monto = ctrl.auxs.selected_plan.precio"></select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-3">Monto</label>
+            <div class="col-xs-3">
+                <div class="input-group">
+                    <span class="input-group-addon">S/. </span>
+                    <input type="text" ng-model="ctrl.params.monto" class="form-control">
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="text-right">
+            <button type="button" class="btn btn-sm btn-default" ng-click="ctrl.close()" ng-disabled="ctrl.sending">Cancelar</button>
+            <button class="btn btn-sm btn-primary" ng-disabled="ctrl.sending"><i class="fa fa-check"></i> Aceptar</button>
+        </div>
+    </form>
+</div>

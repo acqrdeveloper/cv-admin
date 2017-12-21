@@ -1,0 +1,22 @@
+<div class="modal-header">
+	<button type="button" class="close" ng-click="ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="modalCorrespondencia">Programar eliminación</h4>
+</div>
+<div class="modal-body">
+    <form id="form-change-ciclo" class="form-horizontal" ng-submit="ctrl.scheduleDelete()">
+        <div class="form-group" ng-if="ctrl.auxs.fecha_eliminacion === null">
+            <label class="control-label col-xs-3">Seleccione Fecha</label>
+            <div class="col-xs-7">
+                <input class="form-control" type="text" ng-model="ctrl.params.fecha_eliminacion" uib-datepicker-popup is-open="ctrl.auxs.is_open" datepicker-options="ctrl.auxs.dateOpts" ng-click="ctrl.openCalendar()">
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <p ng-if="ctrl.auxs.fecha_eliminacion !== null">Se programó la eliminación de este empresa para el <strong>{{ctrl.auxs.fecha_eliminacion}}</strong>. ¿Desea cancelar?</p>
+        <input type="hidden" ng-if="ctrl.auxs.fecha_eliminacion !== null" ng-model="ctrl.params.delete" value="1">
+        <hr>
+        <div class="text-right">
+            <button type="button" class="btn btn-sm btn-default" ng-click="ctrl.close()">Cancelar</button>
+            <button class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Aceptar</button>
+        </div>
+    </form>
+</div>

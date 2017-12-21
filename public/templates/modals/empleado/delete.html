@@ -1,0 +1,14 @@
+<div class="modal-header">
+	<button type="button" class="close" aria-label="Close" ng-click="$ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="modalEmployee">Eliminar Empleado</h4>
+</div>
+<div class="modal-body">
+	<form id="frm-otros-empleados" ng-submit="$ctrl.delete()">
+		<p>¿Está seguro de eliminar al empleado <b>{{ $ctrl.params.nombre }}</b> ?</p>
+		<hr>
+		<div class="mb0 text-right">
+			<button type="button" class="btn btn-sm btn-default" ng-click="$ctrl.close()" ng-disabled="$ctrl.sending">Cancelar</button>
+			<button type="submit" class="btn btn-sm btn-danger"><i class="fa fa-trash" ng-disabled="$ctrl.sending"></i> Eliminar</button>
+		</div>
+	</form>
+</div>

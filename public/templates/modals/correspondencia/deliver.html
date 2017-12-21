@@ -1,0 +1,18 @@
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="modalCorrespondenciaEnt">Agregar destinatario</h4>
+</div>
+<div class="modal-body">
+	<form id="frm-ent-correspondencia" ng-submit="$ctrl.deliver()">
+		<div class="form-group">
+			<input type="text" required class="form-control input-sm" placeholder="¿A quién se lo entregas?" name="entregado_a" ng-model="$ctrl.params.entregado_a">
+		</div>
+		<hr>
+		<div class="form-group text-right mb0">
+			<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="$ctrl.close()">Cerrar</button>
+			<button type="submit" class="btn btn-warning btn-sm">
+				<i class="fa fa-check" ng-disabled="!($ctrl.params.entregado_a.length>0)"></i> Entregar
+			</button>
+		</div>
+	</form>
+</div>

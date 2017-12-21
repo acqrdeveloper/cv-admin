@@ -1,0 +1,43 @@
+<div class="modal-header" ng-init="$ctrl.getHistory()">
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title text-primary" id="modalCorrespondenciaHistory">{{ $ctrl.row.empresa_nombre }}</h4>
+</div>
+<div class="modal-body">
+	<h5 class="text-muted mt0">DATOS ACTUALES</h5>
+	<ul>
+		<li><strong>Remitente: </strong><span>{{ $ctrl.row.remitente }}</span></li>
+		<li><strong>Asunto: </strong><span>{{ $ctrl.row.asunto }}</span></li>
+		<li><strong>Entregado a: </strong>{{ $ctrl.row.entregado_a }}<span></span></li>
+		<li><strong>Lugar: </strong><span>{{ $ctrl.row.lugar }}</span></li>
+	</ul>
+	<br>
+	<h5 class="text-muted">HISTORIAL</h5>
+	<table class="table table-condensed table-striped">
+		<thead class="hidden">
+			<td style="width:16%"></td>
+			<td style="width:14%"></td>
+			<td style="width:14%"></td>
+			<td style="width:14%"></td>
+			<td style="width:14%"></td>
+			<td style="width:14%"></td>
+			<td style="width:14%"></td>
+		</thead>
+		<tbody>
+			<tr><td colspan="7" ng-if="$ctrl.data.length < 1 && !$ctrl.loading">Esta correspondencia no tiene historial</td></tr>
+			<tr><td colspan="7" ng-if="$ctrl.loading">Cargando...</td></tr>
+			<tr ng-repeat="history in $ctrl.data" ng-if="$ctrl.data.length > 0 && !$ctrl.loading">
+				<td>{{ history.observacion }}</td>
+				<td>{{ history.usuario }}</td>
+				<td>{{ history.fecha }}</td>
+				<td>{{ history.remitente }}</td>
+				<td>{{ history.asunto }}</td>
+				<td>{{ history.entregado_a }}</td>
+				<td>{{ history.lugar }}</td>
+			</tr>
+		</tbody>
+	</table>
+	<hr>
+	<div class="form-group text-right mb0">
+		<button class="btn btn-default btn-sm" data-dismiss="modal" ng-click="$ctrl.close()">Cerrar</button>
+	</div>
+</div>

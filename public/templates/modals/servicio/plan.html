@@ -1,0 +1,48 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="ctrl.close()"><span
+            aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="modalContrato"><span ng-if="ctrl.params.renew != 1">EDITAR</span><span ng-if="ctrl.params.renew == 1">RENOVAR</span> CONTRATO</h4>
+</div>
+<div class="modal-body">
+    <form id="frm-edita-contrato" ng-submit="ctrl.send()">
+        <div class="form-group">
+            <label class="control-label col-xs-3">Fecha Inicio</label>
+            <div class="col-xs-3">
+                <input type="text" ng-model="ctrl.params.fecha_inicio" uib-datepicker-popup class="form-control" ng-click="ctrl.openCalendar1()" is-open="ctrl.auxs.open1" datepicker-options="ctrl.dateOptions" ng-disabled="ctrl.sending">
+            </div>
+            <label class="control-label col-xs-3">Fecha Fin</label>
+            <div class="col-xs-3">
+                <input type="text" ng-model="ctrl.params.fecha_fin" uib-datepicker-popup class="form-control" ng-click="ctrl.openCalendar2()" is-open="ctrl.auxs.open2" datepicker-options="ctrl.dateOptions" ng-disabled="ctrl.sending">
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-3">Plan</label>
+            <div class="col-xs-5">
+                <select class="form-control" ng-model="ctrl.params.plan_dst" ng-options="(p.id*1) as p.nombre for p in ctrl.planes" ng-disabled="ctrl.sending"></select>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="form-group" ng-if="ctrl.params.plan_dst===25"><!-- Coworking (25) -->
+            <label class="control-label col-xs-3">Unidades</label>
+            <div class="col-xs-5">
+                <input type="text" class="form-control" ng-model="ctrl.params.cantidad" ng-disabled="ctrl.sending">
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-3">&nbsp;</div>
+            <div class="checkbox col-xs-7">
+              <label><input type="checkbox" ng-model="ctrl.params.preferencia_estado" ng-true-value="'P'" ng-false-value="''" ng-disabled="ctrl.sending">Establecer en estado <b>PENDIENTE</b></label>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <hr>
+        <div class="text-right">
+            <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" ng-click="ctrl.close()" ng-disabled="ctrl.sending">Cancelar</button>
+            <button class="btn btn-sm btn-warning" id="btnEditContract" ng-disabled="ctrl.sending"><i class="fa fa-gear"></i>
+                Procesar
+            </button>
+        </div>
+    </form>
+</div>

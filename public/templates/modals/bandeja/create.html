@@ -1,0 +1,36 @@
+<div class="modal-header">
+	<button type="button" class="close" ng-click="ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="modalCorrespondencia">Enviar Mensaje</h4>
+</div>
+<div class="modal-body">
+	<form id="frm-correspondencia" class="form-horizontal" ng-submit="ctrl.send()">
+		<div class="form-group form-group-sm">
+			<label class="control-label col-sm-3">De</label>
+			<div class="col-sm-8">
+				<select class="filter-cbo form-control" ng-model="ctrl.params.de" ng-options="empleado.id as empleado.nombre for empleado in ctrl.empleados" ng-disabled="ctrl.sending"></select>
+			</div>
+		</div>
+		<div class="form-group form-group-sm">
+			<label class="control-label col-sm-3">Para</label>
+			<div class="col-sm-8">
+				<div class="input-group" style="width:100%;">
+					<input type="text" autocomplete="off" class="form-control" placeholder="Nombre de Empresa" ng-model="ctrl.selected" uib-typeahead="company as company.empresa_nombre for company in ctrl.filterCompanies($viewValue, true)" typeahead-on-select="(ctrl.params.empresa_id = ctrl.selected.id)" ng-disabled="ctrl.sending" ng-disabled="ctrl.sending">
+					<div class="input-group-btn" ng-if="ctrl.selected.id>0">
+						<a href class="btn btn-sm btn-danger" ng-click="ctrl.clearSelection()"><i class="fa fa-times"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-group form-group-sm">
+			<label class="control-label col-sm-3">Mensaje</label>
+			<div class="col-sm-8">
+				<textarea ng-model="ctrl.params.mensaje" class="form-control" rows="5"></textarea>
+			</div>
+		</div>
+		<hr>
+		<div class="text-right mb0">
+			<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="ctrl.close()" ng-disabled="ctrl.sending">Cerrar</button>
+			<button type="submit" class="btn btn-warning btn-sm" ng-disabled="ctrl.sending"><i class="fa fa-check"></i> Guardar</button>
+		</div>
+	</form>
+</div>

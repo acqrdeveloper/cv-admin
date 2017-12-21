@@ -1,0 +1,63 @@
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title">Bloquear uso de oficina</h4>
+</div>
+<div class="modal-body">
+	<form class="form-horizontal">
+		<div class="form-group form-group-sm" style="padding-left: 40px;">
+			<label>Marque los días</label>
+		    <div class="btn-group">
+		        <label class="btn btn-primary" ng-model="ctrl.aux.days[1]" uib-btn-checkbox btn-checkbox-true="1">Lunes</label>
+		        <label class="btn btn-primary" ng-model="ctrl.aux.days[2]" uib-btn-checkbox btn-checkbox-true="2">Martes</label>
+		        <label class="btn btn-primary" ng-model="ctrl.aux.days[3]" uib-btn-checkbox btn-checkbox-true="3">Miércoles</label>
+		        <label class="btn btn-primary" ng-model="ctrl.aux.days[4]" uib-btn-checkbox btn-checkbox-true="4">Jueves</label>
+		        <label class="btn btn-primary" ng-model="ctrl.aux.days[5]" uib-btn-checkbox btn-checkbox-true="5">Viernes</label>
+		        <label class="btn btn-primary" ng-model="ctrl.aux.days[6]" uib-btn-checkbox btn-checkbox-true="6">Sábado</label>
+		        <label class="btn btn-primary" ng-model="ctrl.aux.days[0]" uib-btn-checkbox btn-checkbox-true="0">Domingo</label>
+		    </div>
+		</div>
+		<div class="form-group form-group-sm">
+			<label class="control-label col-sm-3 label-title" for="plan">Hora inicio</label>
+			<div class="col-sm-4">
+				<select class="form-control" ng-model="ctrl.params.hini" ng-options="t.id as t.value for t in ctrl.aux.times1" ng-change="vm.fn.getAvailableV1()"></select>
+			</div>
+		</div>
+		<div class="form-group form-group-sm">
+			<label class="control-label col-sm-3 label-title" for="plan">Hora fin</label>
+			<div class="col-sm-4">
+				<select class="form-control" ng-model="ctrl.params.hfin" ng-options="t.id as t.value for t in ctrl.aux.times2" ng-change="vm.fn.getAvailableV1()"></select>
+			</div>
+			<div class="col-sm-4">
+				<button type="button" class="btn btn-sm btn-success hint--left" aria-label="Agregar regla" ng-click="ctrl.saveBan()"><i class="fa fa-plus-circle"></i> Agregar</button>
+			</div>
+		</div>
+		<div>
+			<table class="table">
+				<thead>
+					<tr class="warning">
+						<th>Regla</th>
+						<th>Opciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-if="ctrl.aux.searching">
+						<td colspan="2" class="text-center"><i class="fa fa-refresh fa-spin fa-fw"></i> Cargando...</td>
+					</tr>
+					<tr ng-if="ctrl.aux.data.length==0 && !ctrl.aux.searching">
+						<td colspan="2" class="text-center"><i class="fa fa-info-circle"></i> No se encontraron registros.</td>
+					</tr>
+					<tr ng-repeat="r in ctrl.aux.data">
+						<td>{{r.dia_nombre}} de {{r.hini}} a {{r.hfin}}</td>
+						<td>
+							<button class="btn btn-danger btn-xs" ng-click="ctrl.delete(r)"><i class="fa fa-trash"></i></button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<hr>
+		<div class="text-right">
+			<button type="button" class="btn btn-sm btn-default" data-dismiss="modal" ng-click="ctrl.close()">Cancelar</button>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,37 @@
+<div ng-controller="LocalCtrl as vm">
+	<div class="well well-sm mb0">
+		<form class="form-inline ng-pristine ng-valid">
+			<div class="form-group form-group-sm" ng-if="vm.roles.check(73)">
+				<button class="btn btn-sm btn-primary" ng-click="vm.openModal('create')"><i class="fa fa-plus-circle"></i> Nuevo Local</button>
+			</div>
+		</form>
+	</div>
+	<div class="table-responsive mt10">
+		<table class="table table-condensed table-hover">
+			<thead>
+				<tr>
+					<th>Nombre</th>
+					<th>Dirección</th>
+					<th>Ciudad</th>
+					<th>Opciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-if="vm.auxs.searching">
+					<td colspan="4"><i class="fa fa-refresh fa-spin fa-fw"></i> Cargando</td>
+				</tr>
+				<tr ng-if="!vm.auxs.searching && vm.dataLocales.length <= 0">
+					<td colspan="4">No hay locales</td>
+				</tr>
+				<tr ng-repeat="local in vm.dataLocales" class="{{ local.estado === 'I'?'danger':''}}">
+					<td>{{ local.nombre }}</td>
+					<td>{{ local.direccion }}</td>
+					<td>{{ local.distrito }}</td>
+					<td>
+						<button class="btn btn-xs btn-primary" ng-click="vm.openModal('create', local)"><i class="fa fa-pencil fa-wt" ng-if="vm.roles.check(74)"></i></button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

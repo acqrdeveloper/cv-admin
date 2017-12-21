@@ -1,0 +1,231 @@
+<div class="row" ng-init="vm.seguimiento.methods.getData()" ng-show="vm.seguimiento.views.main">
+    <div class="col-sm-12">
+        <div class="panel panel-default panel-body">
+            <div class="row">
+                <form class="form-inline col-md-12">
+                    <div class="col-md-6">
+                        <div class="col-sm-12" style="margin-bottom: 15px;">
+                            <div class="col-sm-3">
+                                <div class="form-group form-group-sm">
+                                    <select class="filter-cbo form-control" ng-model="vm.seguimiento.params.selectedTipofecha" ng-options="tipofecha as tipofecha.name for tipofecha in vm.seguimiento.extras.tipoFecha track by tipofecha.value" ng-change="vm.seguimiento.methods.getData()"></select>
+                                </div>                            
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group form-group-sm input-group">
+                                    <input ng-model="vm.seguimiento.params.fecha_reserva1" ng-change="vm.seguimiento.methods.getData()" type="text" class="form-control" uib-datepicker-popup="yyyy-MM-dd" is-open="vm.seguimiento.auxs.open1" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-sm  btn-default" ng-click="vm.seguimiento.methods.openCalendar1()">
+                                            <i class="fa fa-calendar"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group form-group-sm input-group">
+                                    <input ng-model="vm.seguimiento.params.fecha_reserva2" ng-change="vm.seguimiento.methods.getData()" type="text" class="form-control" uib-datepicker-popup="yyyy-MM-dd" is-open="vm.seguimiento.auxs.open2" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-sm  btn-default" ng-click="vm.seguimiento.methods.openCalendar2()">
+                                            <i class="fa fa-calendar"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="margin-bottom: 15px;">
+                            <div class="col-sm-4">
+                                <div class="form-group form-group-sm">
+                                    <select class="filter-cbo form-control" ng-model="vm.seguimiento.params.selectedCiclo" ng-options="ciclo as ciclo.name for ciclo in vm.seguimiento.extras.listciclo track by ciclo.value" ng-change="vm.seguimiento.methods.getData()"></select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group form-group-sm">
+                                    <select class="filter-cbo form-control" ng-model="vm.seguimiento.params.selectedEstado" ng-options="state as state.name for state in vm.seguimiento.extras.listEstadoEmpresa track by state.value" ng-change="vm.seguimiento.methods.getData()"></select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group form-group-sm">
+                                    <select class="filter-cbo form-control" ng-model="vm.seguimiento.params.selectedPlan" ng-options="plan as plan.nombre for plan in vm.seguimiento.extras.listPlanes track by plan.id" ng-change="vm.seguimiento.methods.getData()"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="col-sm-12" style="margin-bottom: 15px;">
+                            <div class="form-group form-group-sm">
+                                <select class="filter-cbo form-control" ng-model="vm.seguimiento.params.selectedUser" ng-options="user as user.nombre for user in vm.seguimiento.extras.listAsesores track by user.id" ng-change="vm.seguimiento.methods.getData()"></select>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <select class="filter-cbo form-control" ng-model="vm.seguimiento.params.selectedCRM" ng-options="crm as crm.nombre for crm in vm.seguimiento.extras.listCrm track by crm.id" ng-change="vm.seguimiento.methods.getData()"></select>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <select class="filter-cbo form-control" ng-model="vm.seguimiento.params.selectedTerminado" ng-change="vm.seguimiento.methods.getData()">
+                                    <option value="-">Terminado Si/NO </option>
+                                    <option value="0">Terminado NO </option>
+                                    <option value="1">Terminado Si </option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-12" style="margin-bottom: 15px;">
+                            <div class="form-group form-group-sm input-group">
+                                <input type="text" autocomplete="off" class="form-control width250" placeholder="Nombre de Empresa" ng-model="vm.seguimiento.params.selected" uib-typeahead="company as company.empresa_nombre for company in vm.seguimiento.methods.filterCompanies($viewValue)" typeahead-on-select="vm.seguimiento.methods.getData()"> 
+                                <div class="input-group-btn" ng-if="vm.seguimiento.params.selected.id>0">
+                                    <a href class="btn btn-sm btn-danger" ng-click="vm.seguimiento.methods.clearCompanies()"><i class="fa fa-times"></i></a>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <button ng-click="vm.seguimiento.methods.getData()" type="button" aria-label="FILTRAR" class="btn btn-default hint--bottom"><i class="fa fa-filter"></i></button>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="margin-bottom: 15px;">
+                            <!--
+                            <div class="form-group">
+                                <button ng-click="vm.seguimiento.methods.clickExportar()" type="button" aria-label="EXPORTAR" class="btn btn-success hint--bottom"><i class="fa fa-file-excel-o"></i></button>
+                            </div>
+                            -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12" ng-if="!validateLoading">
+                <div class="pull-left pagination">
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ 1 + ((vm.seguimiento.params.pagina-1)*20) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">hasta</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ vm.seguimiento.data.length + ((vm.seguimiento.params.pagina-1)*20) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">de</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ vm.seguimiento.auxs.totalItems }}</span></li>
+                    <li class="disabled  text-center"><span style="width: 150px;" aria-hidden="true">registros encontrados</span>
+                    </li>
+                </div>
+                <ul ng-change="vm.seguimiento.methods.getData()" uib-pagination boundary-links="true" total-items="vm.seguimiento.auxs.totalItems" ng-model="vm.seguimiento.params.pagina" max-size="5" class="pagination-sm pull-right" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-link-numbers="true" rotate="false" items-per-page="20">
+                </ul>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th width="30%">EMPRESA NOMBRE</th>
+                    <th width="35%">NOTA</th>
+                    <th width="10%">FACTURACION</th>
+                    <th width="10%">FECHA CREACION</th>
+                    <th width="10%">ESTADO</th>
+                    <th width="5%"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-center">
+                    <td colspan="9" ng-if="vm.seguimiento.auxs.validateLoading"><i class="fa fa-refresh fa-spin"></i> Cargando...</td>
+                </tr>
+                <tr class="text-center">
+                    <td ng-if="validateFailedLoading" colspan="9">
+                        <i class="fa fa-warning text-warning"></i>
+                        <span class="text-muted"> no se encontraron registros.</span>
+                    </td>
+                </tr>
+                <tr ng-if="!vm.seguimiento.auxs.validateLoading;" ng-repeat="row in vm.seguimiento.data">
+                    <td>
+                        <a href="empresa/{{row.empresa_id}}/seguimiento">{{ row.empresa_nombre }}</a>
+                        <br>
+                        <small class="text-capitalize text-muted"><i class="fa fa-user"></i> {{ row.usunombre }}</small>
+                    </td>
+                    <td>{{ row.contentnota }}</td>
+                    <!--<td><span class="label label-warning">{{ row.tiponombre }}</span></td>-->
+                    <td><span class="label label-primary">{{ row.preferencia_facturacion }}</span></td>
+                    <td><span><i class="fa fa-clock-o"></i> {{ row.fecha_creacion }}</span></td>
+                    <td>
+                        <span ng-if="row.terminado == 1" class="label label-success">ATENDIDO</span>
+                        <span ng-if="row.terminado == 0" class="label label-warning">POR ATENDER</span>
+                    </td>
+                    <td class="text-center">
+
+                        <div class="btn-group dropdown btn-group-xs" role="group" ng-if="vm.roles.check(112)">
+                            <button type="button" class="btn btn-default hint--left" aria-label="Ver Nota" ng-click="vm.seguimiento.methods.clickHideView( 'detalle', 'main', row.empresa_id,row.crm_tipo_id,row.empresa_nombre)">
+                                <i class="fa fa-arrow-right fa-lg"></i>
+                            </button>
+                            <div class="btn-group" role="group" uib-dropdown>
+                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"
+                                        aria-expanded="false"  uib-dropdown-toggle>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu" uib-dropdown-menu>
+                                    <li ng-if="row.terminado == 0">
+                                       <a href ng-click="vm.seguimiento.methods.changeState(row.id,1)"><i class="fa fa-check fa-fw"></i> Marcar como atendido</a> 
+                                    </li>
+                                    <li ng-if="row.terminado == 1">
+                                       <a href ng-click="vm.seguimiento.methods.changeState(row.id,0)"><i class="fa fa-clock-o fa-fw"></i> Marcar como no atendido</a> 
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row" ng-show="vm.seguimiento.views.detalle">
+    <div class="col-sm-12">
+        <div class="panel panel-default panel-body">
+            <h4 class="text-muted"><a href="{{location.origin}}/detalle-empresa/{{ params_detalle.empresa_id }}">{{
+                params_detalle.empresa_nombre }}</a>
+                <span class="pull-right">
+                    <a ng-click="vm.seguimiento.methods.clickHideView( 'main', 'detalle', 0, 0, 0 )"
+                       class="btn btn-circle btn-default hint--bottom"
+                       aria-label="CERRAR">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </span>
+            </h4>
+            <hr>
+            <div class="col-md-12" ng-if="vm.roles.check(113)">
+                <div class="row text-center">
+                    <form role="form" class="form-inline" ng-submit="vm.seguimiento.methods.registerNote()">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <b><h5 class="text-muted text-left text-primary">NUEVA NOTA</h5></b>
+                                <div class="input-group">
+                                    <div class="input-group-btn">
+                                        <select ng-model="vm.seguimiento.params.selectedCRM" class="form-control" style="border-top-left-radius:4px;border-bottom-left-radius:4px;" ng-options="crm as crm.nombre for crm in vm.seguimiento.extras.listCrm track by crm.id"></select>
+                                        <textarea ng-disabled="vm.seguimiento.params.selectedCRM.id=='-'" ng-model="vm.seguimiento.params.txtNota" cols="100" rows="1" class="form-control" style="border-top-right-radius: 0;border-bottom-right-radius: 0;" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block" style="border-top-left-radius: 0;border-bottom-left-radius: 0;">guardar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th width="20%">EMPLEADO</th>
+                    <th width="10%">TIPO</th>
+                    <th width="55%">NOTA</th>
+                    <th width="15%">FECHA CREACION</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-center">
+                    <td colspan="4" ng-if="vm.seguimiento.auxs.validateLoading"><i class="fa fa-refresh fa-spin"></i> Cargando...</td>
+                </tr>
+                <tr class="text-center">
+                    <td ng-if="validateFailedLoading" colspan="4">
+                        <i class="fa fa-warning text-warning"></i>
+                        <span class="text-muted"> no se encontraron registros.</span>
+                    </td>
+                </tr>
+                <tr ng-if="!vm.seguimiento.auxs.validateLoading" ng-repeat="row in vm.seguimiento.datadetalle">
+                    <td>{{ row.empleado }}</td>
+                    <td><span class="label label-warning">{{ row.crm_tipo }}</span></td>
+                    <td>{{ row.nota }}</td>
+                    <td><span><i class="fa fa-clock-o"></i> {{ row.fecha_creacion }}</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+/*****************************
+ All rights reserved.
+ AllFont.net (c) 2011-2015
+ *****************************/
+@font-face {
+    font-family: 'Arial Narrow';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Arial Narrow'), local('ArialNarrow-Regular'),
+        url('../fonts/arial-narrow.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Arial Narrow';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Arial Narrow Bold'), local('ArialNarrow-Bold'),
+        url('../fonts/arial-narrow-bold.ttf') format('truetype');
+}

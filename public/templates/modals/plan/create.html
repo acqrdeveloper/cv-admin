@@ -1,0 +1,79 @@
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="modalNewPlan">Plan</h4>
+</div>
+<div class="modal-body">
+	<form id="frm-planes" class="form-horizontal" ng-submit="ctrl.send()">
+		<input type="hidden" name="id" value="0" id="plan_id">
+		<input type="hidden" name="estado">
+		<div class="form-group form-group-sm">
+			<label class="control-label col-sm-3 label-title" for="plan">Nombre Plan</label>
+			<div class="col-sm-3">
+				<input type="text" ng-model="ctrl.params.nombre" id="plan" class="form-control" required>
+			</div>
+			<label class="control-label col-sm-3 label-title" for="precio">Precio Plan (S/.)</label>
+			<div class="col-sm-3">
+				<input type="text" ng-model="ctrl.params.precio" id="precio" class="form-control" required>
+			</div>
+		</div>
+		<div class="form-group form-group-sm">
+			<label for="descripcion" class="control-label col-sm-3">Descripción</label>
+			<div class="col-sm-9">
+				<input type="text" ng-model="ctrl.params.descripcion" id="descripcion" class="form-control">
+			</div>
+		</div>
+		<div class="form-group form-group-sm">
+			<label class="col-sm-3 control-label label-title" for="copias">Cantidad Copias</label>
+			<div class="col-sm-3">
+				<input type="text" ng-model="ctrl.params.cantidad_copias" id="copias" class="form-control" required>
+			</div>
+			<label class="col-sm-3 control-label label-title" for="impresiones"><acronym title="Cantidad">Cant.</acronym> Impresiones</label>
+			<div class="col-sm-3">
+				<input type="text" ng-model="ctrl.params.cantidad_impresiones" id="impresiones" class="form-control" required>
+			</div>
+		</div>
+		<div class="form-group form-group-sm">
+			<label class="control-label col-sm-3 label-title" for="horas-privada">Horas Privada</label>
+			<div class="col-sm-3">
+				<input type="num" ng-model="ctrl.params.horas_privada" id="horas-privada" class="form-control" required>
+			</div>
+			<label class="control-label col-sm-3 label-title" for="horas-reunion">Horas Reunión</label>
+			<div class="col-sm-3">
+				<input type="num" ng-model="ctrl.params.horas_reunion" id="horas-reunion" class="form-control" required>
+			</div>
+		</div>
+		<div class="form-group form-group-sm">
+			<label class="control-label col-sm-3">Proyector</label>
+			<div class="col-sm-3">
+				<div class="radio-inline">
+					<label>
+						<input type="radio" ng-model="ctrl.params.proyector" value="S" id="prs"> SI
+					</label>
+				</div>
+				<div class="radio-inline">
+					<label>
+						<input type="radio" ng-model="ctrl.params.proyector" value="N" id="prn"> NO
+					</label>
+				</div>
+			</div>
+			<label class="control-label col-sm-3">Cochera</label>
+			<div class="col-sm-3">
+				<div class="radio-inline">
+					<label>
+						<input type="radio" ng-model="ctrl.params.cochera" value="S" id="ps"> SI
+					</label>
+				</div>
+				<div class="radio-inline">
+					<label>
+						<input type="radio" ng-model="ctrl.params.cochera" value="N" id="pn"> NO
+					</label>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<div class="text-right">
+			<button type="button" class="btn btn-sm btn-default" data-dismiss="modal" ng-click="ctrl.close()">Cancelar</button>
+			<button class="btn btn-sm btn-primary btn-submit"><i class="fa fa-check"></i> Guardar</button>
+		</div>
+	</form>
+</div>

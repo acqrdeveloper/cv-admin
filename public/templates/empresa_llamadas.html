@@ -1,0 +1,56 @@
+<div class="page mt10 fade in" ng-controller="DetLlamadaCtrl as vm">
+    <div class="well well-sm">
+        <form id="frm-llamadas" class="form-inline">
+            <input type="hidden" name="cdr" value="<?php echo $empData['preferencia_cdr'] ?>">
+            <div class="form-group">
+                <label>Inicio</label>
+                <input type="text" ng-model="vm.params.inicio" class="date input-sm form-control" uib-datepicker-popup is-open="vm.isOpenedCldr1" ng-click="vm.openCalendar1()">
+            </div>
+            <div class="form-group">
+                <label id="Fin">Fin</label>
+                <input type="text" ng-model="vm.params.fin" class="date input-sm form-control" uib-datepicker-popup is-open="vm.isOpenedCldr2" ng-click="vm.openCalendar2()">
+            </div>
+            <div class="form-group">
+                <select ng-model="vm.params.disposicion" class="input-sm form-control">
+                    <option value="ALL" selected>Todas</option>
+                    <option value="ANSWERED">Respondida</option>
+                    <option value="NO ANSWER">No Respondida</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-sm btn-default" ng-click="vm.search()"><i class="fa fa-search"></i> Buscar</button>
+                <b id="total-data" class="result">{{ vm.data.length }} Llamada(s)</b>
+            </div>
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-condensed table-hover table-striped">
+            <thead>
+            <tr>
+                <th class="text-center">Numero</th>
+                <th class="text-center">Origen</th>
+                <th class="text-center">Anexo</th>
+                <th class="text-center">Fecha</th>
+                <th class="text-center">Duración</th>
+                <th class="text-center">Disposición</th>
+            </tr>
+            </thead>
+            <tbody id="data-llamadas">
+                <tr ng-if="vm.loading">
+                    <th height="40" colspan="5"><i class="fa fa-refresh fa-spin fa-fw"></i> Cargando</th>
+                </tr>
+                <tr ng-if="!vm.loading && vm.data.length<=0">
+                    <td colspan="6">No hay registros</td>
+                </tr>
+                <tr ng-if="!vm.loading" ng-repeat="row in vm.data">
+                    <td class="text-center">{{row.numero}}</td>
+                    <td class="text-center">{{row.src}}</td>
+                    <td class="text-center">{{row.dst}}</td>
+                    <td class="text-center">{{row.calldate}}</td>
+                    <td class="text-center">{{row.duration}}</td>
+                    <td class="text-center">{{row.disposition}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

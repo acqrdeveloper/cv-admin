@@ -1,0 +1,125 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="ctrl.close()"><span aria-hidden="true">&times;</span></button>
+    <h5 class="modal-title" id="modalPay">Pagar <b>{{ ctrl.invoice.comprobante }}</b></h5>
+</div>
+<div class="col-sm-10 col-sm-offset-1"></div>
+<div class="modal-body">
+    <form id="frm-add-pago" class="form-horizontal" ng-submit="ctrl.payIt()">
+        <div class="form-group form-group-sm">
+            <div class="col-sm-1">&nbsp;</div>
+            <label class="control-label col-sm-3">Método de Pago</label>
+            <div class="col-sm-4">
+                <select class="form-control" ng-model="ctrl.params.tipo" ng-change="ctrl.calculate(); ctrl.getGuarantees()" ng-disabled="ctrl.sending">
+                    <option value="DEPOSITO">DEPOSITO</option>
+                    <option value="EFECTIVO">EFECTIVO</option>
+                    <option value="GARANTIA">GARANTIA</option>
+                </select>
+            </div>
+            <div class="col-sm-1">&nbsp;</div>
+        </div>
+        <div class="form-group" ng-if="ctrl.params.tipo==='GARANTIA'">
+            <div class="col-sm-1">&nbsp;</div>
+            <div class="col-sm-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>Mis garantías</span>
+                    </div>
+                    <div class="panel-body">
+                        <p ng-repeat="w in ctrl.warranties">
+                            <label><input type="checkbox" ng-click="ctrl.addFacturaItem(w)" ng-disabled="ctrl.sending"> {{w.descripcion}} ({{w.precio}})</label>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1">&nbsp;</div>
+        </div>
+        <div class="form-group form-group-sm" ng-if="ctrl.params.tipo==='DEPOSITO'">
+            <div class="col-sm-1">&nbsp;</div>
+            <div class="col-sm-3">
+                <label class="control-label">Banco</label>
+                <select class="form-control" ng-model="ctrl.params.deposito_banco" ng-options="idx for idx in ctrl.bancos" ng-disabled="ctrl.sending"></select>
+            </div>
+            <div class="col-sm-7">
+                <label class="control-label">Nro. Cuenta</label>
+                <select class="form-control" ng-model="ctrl.params.deposito_cuenta" ng-options="c.id as c.cuenta for c in ctrl.ctas" ng-disabled="ctrl.sending"></select>
+            </div>
+            <div class="col-sm-1">&nbsp;</div>
+        </div>
+        <div class="form-group form-group-sm" ng-if="ctrl.params.tipo==='DEPOSITO'">
+            <div class="col-sm-1">&nbsp;</div>
+            <div class="col-sm-5">
+                <label class="control-label">Nro. Operación</label>
+                <input type="text" class="form-control" ng-model="ctrl.params.detalle" ng-disabled="ctrl.sending">
+            </div>
+            <div class="col-sm-5">
+                <label class="control-label">Fecha de Pago</label>
+                <input type="text" class="form-control" ng-model="ctrl.params.deposito_fecha" uib-datepicker-popup is-open="ctrl.isOpenCalendar" ng-click="ctrl.openCalendar()" ng-disabled="ctrl.sending">
+            </div>
+            <div class="col-sm-1">&nbsp;</div>
+        </div>
+        <div class="form-group form-group-sm" ng-if="ctrl.params.tipo==='DEPOSITO'">
+            <div class="col-sm-1">&nbsp;</div>
+            <div class="col-sm-5">
+                <label class="control-label">Aplicar Detracción</label>
+                <select class="form-control" ng-disabled="ctrl.params.monto<=700" ng-model="ctrl.ifDetraccion" ng-change="ctrl.calculate()">
+                    <option value="0">NO</option>
+                    <option value="1">SÍ</option>
+                </select>
+            </div>
+            <div class="col-sm-5">
+                <label class="control-label">Pagar con POS</label>
+                <select class="form-control" ng-model="ctrl.params.id_pos" ng-change="ctrl.calculate()" ng-disabled="ctrl.sending">
+                    <option ng-value="0">NO</option>
+                    <option ng-value="1">DÉBITO</option>
+                    <option ng-value="2">CRÉDITO</option>
+                </select>
+            </div>
+            <div class="col-sm-1">&nbsp;</div>
+        </div>
+        <div class="form-group form-group-sm" ng-if="ctrl.params.tipo!=='GARANTIA'">
+            <div class="col-sm-2">&nbsp;</div>
+            <label class="control-label col-sm-3">Monto a Pagar</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" ng-model="ctrl.params.monto" ng-change="ctrl.calculate()" ng-disabled="ctrl.sending">
+            </div>
+            <div class="col-sm-2">&nbsp;</div>
+        </div>
+        <div class="form-group form-group-sm" ng-if="ctrl.ifDetraccion === '1' && ctrl.params.tipo==='DEPOSITO'">
+            <div class="col-sm-1">&nbsp;</div>
+            <div class="col-sm-5">
+                <label>Detracción</label>
+                <input type="text" class="form-control" ng-model="ctrl.params.detraccionD" ng-readonly="true" ng-disabled="ctrl.sending">
+            </div>
+            <div class="col-sm-5">
+                <label>Diferencia de Detracción</label>
+                <input type="text" class="form-control" ng-model="ctrl.params.detraccionE" ng-readonly="true" ng-disabled="ctrl.sending">
+            </div>
+            <div class="col-sm-1">&nbsp;</div>
+        </div>
+        <div class="form-group form-group-sm" ng-if="ctrl.params.id_pos>0 && ctrl.params.tipo==='DEPOSITO'">
+            <div class="col-sm-1">&nbsp;</div>
+            <div class="col-sm-5">
+                <label>{{ (ctrl.params.id_pos=='1'?'DÉBITO (3.37%)':(ctrl.params.id_pos=='2'?'CRÉDITO (4.2451%)':'')) }}</label>
+                <input type="text" class="form-control" ng-model="ctrl.params.des_com_pos" ng-readonly="true" ng-disabled="ctrl.sending">
+            </div>
+            <div class="col-sm-5">
+                <label>Diferencia POS</label>
+                <input type="text" class="form-control" ng-model="ctrl.params.dif_dep_pos" ng-readonly="true" ng-disabled="ctrl.sending">
+            </div>
+            <div class="col-sm-1">&nbsp;</div>
+        </div>
+        <div class="form-group form-group-sm">
+            <div class="col-sm-1">&nbsp;</div>
+            <div class="col-sm-10">
+                <label>Observación</label>
+                <textarea ng-model="ctrl.params.observacion" class="form-control" ng-disabled="ctrl.sending"></textarea>
+            </div>
+            <div class="col-sm-1">&nbsp;</div>
+        </div>
+        <div class="text-right">
+            <button type="button" class="btn btn-sm btn-default btn-close" ng-click="ctrl.close()" ng-disabled="ctrl.sending">Cancelar</button>
+            <button ng-if="ctrl.params.tipo !== 'GARANTIA'" class="btn btn-sm btn-warning" ng-disabled="ctrl.validateForm()  || ctrl.sending"><i class="fa fa-refresh"></i> Pagar</button>
+            <button ng-if="ctrl.params.tipo === 'GARANTIA'" type="button" class="btn btn-sm btn-warning" ng-disabled="ctrl.enableGuaranteeButton() || ctrl.sending" ng-click="ctrl.payWithGuarantee()"><i class="fa fa-refresh"></i> Pagar con Garantía</button>
+        </div>
+    </form>
+</div>

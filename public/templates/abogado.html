@@ -1,0 +1,127 @@
+<div class="row" ng-controller="AbogadoCtrl as vm">
+    <div class="col-md-12">
+        <div class="panel panel-default panel-body">
+            <div class="form-inline">
+                <div class="form-group input-group">
+                    <input type="text" autocomplete="off"
+                           class="form-control width250 ng-valid ng-dirty ng-touched ng-valid-editable ng-not-empty"
+                           placeholder="Nombre de Empresa"
+                           ng-model="vm.filters.selected"
+                           uib-typeahead="company as company.empresa_nombre for company in vm.filters.filterCompanies($viewValue)"
+                           typeahead-on-select="(vm.params.empresa_id = vm.filters.selected.id) && vm.methods.applyChange()"
+                           aria-autocomplete="list" aria-expanded="false" aria-owns="typeahead-21-4831" style="">
+                    <ul class="dropdown-menu ng-hide"
+                        role="listbox"
+                        aria-hidden="true"
+                        id="typeahead-21-4831"
+                        matches="matches"
+                        active="activeIdx"
+                        select="select(activeIdx, evt)"
+                        move-in-progress="moveInProgress"
+                        query="query"
+                        position="position"
+                        debounce="debounceUpdate"
+                        style="top: 30px; left: 0px;">
+                    </ul>
+                    <div class="input-group-btn ng-scope" ng-if="vm.filters.selected.id > 0">
+                        <a href="" class="btn btn-danger" ng-click="vm.methods.clearCompanies()"><i
+                                class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <select class="filter-cbo form-control" ng-model="vm.filters.selectedYear"
+                            ng-options="y for y in vm.filters.years"
+                            ng-change="vm.methods.applyChange()">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="filter-cbo form-control" ng-model="vm.filters.selectedMonth"
+                            ng-options="(key*1) as value for (key,value) in vm.filters.months"
+                            ng-change="vm.methods.applyChange()">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="filter-cbo form-control" ng-model="vm.filters.selectedEstado"
+                            ng-options="x as x.name for x in vm.filters.arrayEstados track by x.id"
+                            ng-change="vm.methods.applyChange()">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="filter-cbo form-control" ng-model="vm.filters.selectedCaso"
+                            ng-options="x as x.name for x in vm.filters.arrayCasos track by x.id"
+                            ng-change="vm.methods.applyChange()">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="filter-cbo form-control" ng-model="vm.filters.filtro" />
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button ng-click="vm.methods.applyChange()" type="button" aria-label="ACTUALIZAR"
+                            class="btn hint--left"><i class="fa fa-refresh"></i></button>
+                </div>
+                <!--<div class="form-group">
+                    <button ng-click="vm.methods.applyClean()" type="button" aria-label="NUEVO"
+                            class="btn btn-primary hint--bottom"><i class="fa fa-plus"></i></button>
+                </div>-->
+            </div>
+        </div>
+        <div class="row">
+            <div id="list-correspondencias-paginator" class="col-sm-12" ng-if="!vm.validateLoading">
+                <div class="pull-left pagination">
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ 1 + ((vm.params.pagina-1)*20) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">hasta</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ vm.data.length + ((vm.params.pagina-1)*20) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">de</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ vm.totalItems }}</span></li>
+                    <li class="disabled  text-center"><span style="width: 150px;" aria-hidden="true">registros encontrados</span>
+                    </li>
+                </div>
+                <ul ng-change="vm.methods.applyChange()" uib-pagination boundary-links="true"
+                    total-items="vm.totalItems"
+                    ng-model="vm.params.pagina" max-size="5" class="pagination-sm pull-right" previous-text="&lsaquo;"
+                    next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-link-numbers="true"
+                    rotate="false" items-per-page="20">
+                </ul>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <tr class="warning">
+                <th>Empresa</th>
+                <th>Caso</th>
+                <th>Demandante</th>
+                <th>Demandado</th>
+                <th>Fec Registro</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center">
+                <td colspan="6" ng-if="vm.validateLoading"><i class="fa fa-refresh fa-spin"></i> Cargando...</td>
+            </tr>
+            <tr class="text-center">
+                <td ng-if="vm.validateFailedLoading" colspan="6">
+                    <i class="fa fa-warning text-warning"></i>
+                    <span class="text-muted"> no se encontraron registros.</span>
+                </td>
+            </tr>
+            <tr ng-repeat="row in vm.data" ng-if="!vm.validateLoading; !vm.validateFailedLoading">
+                <td>{{ row.empresa_nombre }}</td>
+                <td>{{ row.caso }}</td>
+                <td>{{ row.demandante }}</td>
+                <td>{{ row.demandado }}</td>
+                <td>{{ row.created_at }}</td>
+                <td>{{ row.estado }}</td>
+                <td><a href ng-click="vm.openModal(row)" ng-if="vm.roles.check(117)"><i class="fa fa-folder fa-lg"></i></a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

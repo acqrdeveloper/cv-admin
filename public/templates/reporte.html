@@ -1,0 +1,227 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default panel-body">
+            <form class="form-inline col-md-12">
+                <div class="form-group form-group-sm">
+                    <select ng-disabled="validateLoading[params.reporte.value]" class="filter-cbo form-control" ng-model="params.reporte" ng-options="reporte as reporte.name for reporte in reportes track by reporte.value" ng-change="methods.changeReport()">
+                    </select>
+                </div>
+                <div class="control-group form-inline">
+                    <label for="name" class="control-label">Emision</label>
+                    <div class="form-group form-group-sm">
+                        <select ng-disabled="validateLoading[params.reporte.value]" class="filter-cbo form-control" ng-model="params.year" ng-options="year for year in years track by year" ng-change="methods.applyChange()">
+                        </select>
+                    </div>
+                    <div ng-show="params.reporte.value!='paymentintime' && params.reporte.value!='sunatcomprobante' && params.reporte.value!='cuadremensual'" class="form-group form-group-sm">
+                        <select ng-disabled="validateLoading[params.reporte.value]" class="filter-cbo form-control" ng-model="params.month" ng-options="(key*1) as value for (key,value) in months" ng-change="methods.applyChange()">
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group form-inline">
+                    <label ng-show="params.reporte.value=='monthpay'" for="name" class="control-label">Pagado</label>
+                    <div ng-show="params.reporte.value=='monthpay'" class="form-group form-group-sm">
+                        <select ng-disabled="validateLoading[params.reporte.value]" class="filter-cbo form-control" ng-model="params.yearpay" ng-options="year for year in yearspay track by year" ng-change="methods.applyChange()">
+                        </select>
+                    </div>
+                    <div ng-show="params.reporte.value=='monthpay'" class="form-group form-group-sm">
+                        <select ng-disabled="validateLoading[params.reporte.value]" class="filter-cbo form-control" ng-model="params.monthpay" ng-options="(key*1) as value for (key,value) in months" ng-change="methods.applyChange()">
+                        </select>
+                    </div>
+                    <div ng-show="params.reporte.value=='coffeebreak'" class="form-group form-group-sm">
+                        <select ng-disabled="validateLoading[params.reporte.value]" class="filter-cbo form-control" ng-model="params.day" ng-options="(day.id*1) as day.value for day in days" ng-change="methods.applyChange()">
+                        </select>
+                    </div>
+                </div>
+                <div ng-show="params.reporte.value=='monthpay' || params.reporte.value=='payment' || params.reporte.value=='invoicepayed' " class="form-group form-group-sm">
+                    <select ng-disabled="validateLoading[params.reporte.value]" class="filter-cbo form-control" ng-model="params.tipopago" ng-options="tp as tp.name for tp in tipopago track by tp.value" ng-change="methods.applyChange()">
+                    </select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <button ng-disabled="validateLoading[params.reporte.value]" ng-click="methods.applyChange()" type="button" aria-label="FILTRAR" class="btn btn-sm btn-default btnRefreshData hint--top"><i class="fa fa-refresh fa-fw fa-lg"></i></button>
+                </div>
+                <div class="form-group form-group-sm" ng-if="roles.check(115)">
+                    <button ng-if="params.reporte.value!='ownmissing' && params.reporte.value!='paymentintime'" ng-disabled="validateLoading[params.reporte.value]" ng-click="methods.clickExportar()" type="button" aria-label="EXPORTAR" class="btn btn-sm btn-success hint--bottom"><i class="fa fa-file-excel-o"></i></button>
+                </div>
+            </form>
+        </div>
+        
+        <table class="table table-striped table-hover table-condensed mb90" ng-if="params.reporte.value!='ownmissing'">
+            <thead ng-if="columns.length>0 && params.reporte.value !=='cuadremensual'">
+                <tr class="warning">
+                    <th rowspan="2" class="text-center" ng-repeat="col in columns track by $index">{{ col }}</th>
+                </tr>
+            </thead>
+            <thead ng-if="params.reporte.value=='cuadremensual'">
+                <tr>
+                    <th colspan="2" rowspan="2" style="text-align: center;">Empresa</th>
+                    <th colspan="2" style="text-align: center;">Enero</th>
+                    <th colspan="2" style="text-align: center;">Febrero</th>
+                    <th colspan="2" style="text-align: center;">Marzo</th>
+                    <th colspan="2" style="text-align: center;">Abril</th>
+                    <th colspan="2" style="text-align: center;">Mayo</th>
+                    <th colspan="2" style="text-align: center;">Junio</th>
+                    <th colspan="2" style="text-align: center;">Julio</th>
+                    <th colspan="2" style="text-align: center;">Agosto</th>
+                    <th colspan="2" style="text-align: center;">Setiembre</th>
+                    <th colspan="2" style="text-align: center;">Octubre</th>
+                    <th colspan="2" style="text-align: center;">Noviembre</th>
+                    <th colspan="2" style="text-align: center;">Diciembre</th>
+                    <th colspan="2" style="text-align: center;">Total</th>
+                </tr>
+                <tr>
+                    <th style="text-align: center;">Deuda</th>
+                    <th style="text-align: center;">Pago</th>
+                    <th style="text-align: center;">Deuda</th>
+                    <th style="text-align: center;">Pago</th>
+                    <th style="text-align: center;">Deuda</th>
+                    <th style="text-align: center;">Pago</th>
+                    <th style="text-align: center;">Deuda</th>
+                    <th style="text-align: center;">Pago</th>
+                    <th style="text-align: center;">Deuda</th>
+                    <th style="text-align: center;">Pago</th>
+                    <th style="text-align: center;">Deuda</th>
+                    <th style="text-align: center;">Pago</th>
+                    <th style="text-align: center;">Deuda</th>
+                    <th style="text-align: center;">Pago</th>
+                    <th style="text-align: center;">Deuda</th>
+                    <th style="text-align: center;">Pago</th>
+                    <th style="text-align: center;">Deuda</th>
+                    <th style="text-align: center;">Pago</th>
+                    <th style="text-align: center;">Deuda</th>
+                    <th style="text-align: center;">Pago</th>
+                    <th style="text-align: center;">Deuda</th>
+                    <th style="text-align: center;">Pago</th>
+                    <th style="text-align: center;">Deuda</th>
+                    <th style="text-align: center;">Pago</th>
+                    <th style="text-align: center;">Deuda</th>
+                    <th style="text-align: center;">Pago</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="params.reporte.value!='monthpay' && params.reporte.value!='guarantee'" class="text-center">
+                    <td colspan="7" ng-if="validateLoading[params.reporte.value]"><i class="fa fa-refresh fa-spin"></i> Cargando...</td>
+                </tr> 
+                <tr ng-if="params.reporte.value!='monthpay' && params.reporte.value!='guarantee'" class="text-center">
+                    <td ng-if="validateFailedLoading[params.reporte.value]" colspan="7"><i class="fa fa-warning text-warning"></i><span class="text-muted"> no se encontraron registros.</span></td>
+                </tr>
+                <tr ng-if="params.reporte.value=='monthpay'" class="text-center">
+                    <td colspan="9" ng-if="validateLoading[params.reporte.value]"><i class="fa fa-refresh fa-spin"></i> Cargando...</td>
+                </tr>
+                <tr ng-if="params.reporte.value=='guarantee'" class="text-center">
+                    <td ng-if="validateFailedLoading[params.reporte.value]" colspan="6"><i class="fa fa-warning text-warning"></i><span class="text-muted"> no se encontraron registros.</span></td>
+                </tr>
+                
+                <tr ng-if="!validateLoading[params.reporte.value] && data[params.reporte.value].length > 0 && params.reporte.value != 'paymentintime' && params.reporte.value != 'cuadremensual' && params.reporte.value != 'auditorio'" ng-repeat="row in data[params.reporte.value]">
+                    <td ng-repeat="rsc in rsColumns" class="{{rsc.classes}}">{{ row[rsc.id] }}</td>
+                </tr>
+
+                <tr ng-if="!validateLoading[params.reporte.value] && data[params.reporte.value].length > 0 && params.reporte.value == 'auditorio' && row.estado == 'A'" ng-repeat="row in data[params.reporte.value]">
+                    <td ng-repeat="rsc in rsColumns" class="{{rsc.classes}}">{{ row[rsc.id] }}</td>
+                </tr>
+
+                <tr ng-if="!validateLoading[params.reporte.value] && params.reporte.value == 'paymentintime'" ng-repeat="row in data[params.reporte.value]">
+                    <td class="text-center">{{ row.anio }}</td>
+                    <td class="text-center">{{ row.mes }}</td>
+                    <td class="text-center">{{ row.x1 }}</td>
+                    <td class="text-center">{{ row.x2 }}</td>
+                    <td class="text-center">{{ row.x3 }}</td>
+                    <td class="text-center">{{ row.x4 }}</td>
+                    <td class="text-center" style="font-weight: bolder; font-size: 110%;">{{ (row.x1*1) + (row.x2*1) + (row.x3*1) + (row.x4*1) }}</td>
+                    <td class="text-right" ng-if="params.reporte.value=='paymentintime'">{{ row.x1_importe | number:2 }}</td>
+                    <td class="text-right" ng-if="params.reporte.value=='paymentintime'">{{ row.x2_importe | number:2 }}</td>
+                    <td class="text-right" ng-if="params.reporte.value=='paymentintime'">{{ row.x3_importe | number:2 }}</td>
+                    <td class="text-right" ng-if="params.reporte.value=='paymentintime'">{{ row.x4_importe | number:2 }}</td>
+                    <td class="text-right" style="font-weight: bolder; font-size: 110%;">{{ ( (row.x1_importe*1) + (row.x2_importe*1) + (row.x3_importe*1) + (row.x4_importe*1) ) | number:2 }}</td>
+                </tr>
+
+                <tr ng-if="!validateLoading[params.reporte.value] && params.reporte.value == 'cuadremensual'" ng-repeat="row in data[params.reporte.value]">
+                    <td colspan="2">{{ row.empresa_nombre }}</td>
+                    <td class="text-right">{{ row["01_d"] |number:2}}</td>
+                    <td class="text-right">{{ row["01_p"] |number:2 }}</td>
+                    <td class="text-right">{{ row["02_d"] |number:2}}</td>
+                    <td class="text-right">{{ row["02_p"] |number:2 }}</td>
+                    <td class="text-right">{{ row["03_d"] |number:2}}</td>
+                    <td class="text-right">{{ row["03_p"] |number:2 }}</td>
+                    <td class="text-right">{{ row["04_d"] |number:2}}</td>
+                    <td class="text-right">{{ row["04_p"] |number:2 }}</td>
+                    <td class="text-right">{{ row["05_d"] |number:2}}</td>
+                    <td class="text-right">{{ row["05_p"] |number:2 }}</td>
+                    <td class="text-right">{{ row["06_d"] |number:2}}</td>
+                    <td class="text-right">{{ row["06_p"] |number:2 }}</td>
+                    <td class="text-right">{{ row["07_d"] |number:2}}</td>
+                    <td class="text-right">{{ row["07_p"] |number:2 }}</td>
+                    <td class="text-right">{{ row["08_d"] |number:2}}</td>
+                    <td class="text-right">{{ row["08_p"] |number:2 }}</td>
+                    <td class="text-right">{{ row["09_d"] |number:2}}</td>
+                    <td class="text-right">{{ row["09_p"] |number:2 }}</td>
+                    <td class="text-right">{{ row["10_d"] |number:2}}</td>
+                    <td class="text-right">{{ row["10_p"] |number:2 }}</td>
+                    <td class="text-right">{{ row["11_d"] |number:2}}</td>
+                    <td class="text-right">{{ row["11_p"] |number:2 }}</td>
+                    <td class="text-right">{{ row["12_d"] |number:2}}</td>
+                    <td class="text-right">{{ row["12_p"] |number:2 }}</td>
+                    <td class="text-right">{{ row["d"] |number:2}}</td>
+                    <td class="text-right">{{ row["p"] |number:2 }}</td>
+                </tr>
+                
+                <tr ng-if="params.reporte.value=='paymentintime'" style="font-weight: bolder; font-size: 105%;">
+                    <td colspan="2"></td>
+                    <td style="text-align: center;">{{ data[params.reporte.value] |sumByKey:'x1' }}</td>
+                    <td style="text-align: center;">{{ data[params.reporte.value] |sumByKey:'x2' }}</td>
+                    <td style="text-align: center;">{{ data[params.reporte.value] |sumByKey:'x3' }}</td>
+                    <td style="text-align: center;">{{ data[params.reporte.value] |sumByKey:'x4' }}</td>
+                    <td style="text-align: center;">{{ (data[params.reporte.value] |sumByKey:'x1') + (data[params.reporte.value] |sumByKey:'x2') + (data[params.reporte.value] |sumByKey:'x3') + (data[params.reporte.value] |sumByKey:'x4') }}</td>
+
+                    <td style="text-align: right;">{{ data[params.reporte.value] |sumByKey:'x1_importe'| number:2 }}</td>
+                    <td style="text-align: right;">{{ data[params.reporte.value] |sumByKey:'x2_importe'| number:2 }}</td>
+                    <td style="text-align: right;">{{ data[params.reporte.value] |sumByKey:'x3_importe'| number:2 }}</td>
+                    <td style="text-align: right;">{{ data[params.reporte.value] |sumByKey:'x4_importe'| number:2 }}</td>
+                    <td style="text-align: right;">{{ ( (data[params.reporte.value] |sumByKey:'x1_importe') + (data[params.reporte.value] |sumByKey:'x2_importe') + (data[params.reporte.value] |sumByKey:'x3_importe') + (data[params.reporte.value] |sumByKey:'x4_importe') ) | number:2 }}</td>
+                </tr>
+
+
+                <tr ng-if="params.reporte.value=='empresaactual'" style="font-weight: bolder; font-size: 105%;">
+                    <td colspan="2"></td>
+                    <td style="text-align: right;">{{ data[params.reporte.value] |sumByKey:'activo' | number:0}}</td>
+                    <td style="text-align: right;">{{ data[params.reporte.value] |sumByKey:'pendiente' | number:0}}</td>
+                    <td style="text-align: right;">{{ data[params.reporte.value] |sumByKey:'suspendido' | number:0}}</td>
+                    <td style="text-align: right;">{{ data[params.reporte.value] |sumByKey:'eliminado' | number:0}}</td>
+                    <td style="text-align: right;">{{ data[params.reporte.value] |sumByKey:'total' | number:0}}</td>
+                    <td style="text-align: right;">{{ data[params.reporte.value] |sumByKey:'activo_conconvenio' | number:0}}</td>
+                    <td style="text-align: right;">{{ data[params.reporte.value] |sumByKey:'activo_sinconvenio' | number:0}}</td>
+                </tr>
+
+            </tbody>
+        </table>
+        <table class="table table-striped table-hover table-condensed mb90" ng-if="params.reporte.value=='ownmissing'">
+            <tbody>
+                <tr style="background-color: transparent!important;">
+                    <td style="width: 48%; vertical-align: top!important;">
+                        <div  style="width: 100%; height: 70px; border: 1px solid #d0cbcb; vertical-align: middle; padding: 17px; font-size: 25px;">
+                            SOBRANTES
+                        </div>
+                        <div style="width: 100%; height: 90px; border: 1px solid #d0cbcb;" ng-repeat="row in data['ownmissing'].sobrantes.rows">
+                            <div style="height: 30px; padding: 10px; color: #337ab7; ">{{row.empresa_nombre}}</div>
+                            <div style="height: 60px; padding: 10px;">{{row.descripcion }} {{ " ( " + row.fecha_creacion + " ) " }} <b style='color:red;' ng-if="row.estado == 'PENDIENTE'">PENDIENTE</b><b style='color:green;' ng-if="row.estado != 'PENDIENTE'">PROCESADO</b> {{ " " + row.fecha_pago }}</div>
+                        </div>
+                    </td>
+                    <td style="width: 4%;" "></td>
+                    <td style="width: 48%; vertical-align: top!important; ">
+                        <div  style="width: 100%; height: 70px; border: 1px solid #d0cbcb; vertical-align: middle; padding: 17px; font-size: 25px;">
+                            SALDOS
+                        </div>
+                        <div style="width: 100%; height: 90px; border: 1px solid #d0cbcb; " ng-repeat="row in data[ 'ownmissing'].adelantos.rows ">
+                            <div style="height: 30px; padding: 10px; color: #337ab7; ">{{row.empresa_nombre}}</div>
+                            <div style="height: 60px; padding: 10px; ">{{row.descripcion }} {{ " ( " + row.fecha_creacion + " ) " }} <b style='color:red;' ng-if="row.estado=='P' ">PENDIENTE</b><b style='color:green;' ng-if="row.estado !='P' ">SALDADO</b></div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!--
+            sunatcomprobante
+            cuadremensual
+            localvisitantes
+        -->
+    </div>
+</div>

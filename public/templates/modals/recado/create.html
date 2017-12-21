@@ -1,0 +1,48 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$ctrl.close()"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="modalRecado">Recado</h4>
+</div>
+<div class="modal-body">
+    <form id="frm-recado" class="form-horizontal" ng-submit="$ctrl.send()">
+        <input type="hidden" ng-model="$ctrl.params.empresa_id">
+        <div class="form-group form-group-sm">
+            <div class="col-sm-12">
+                <input type="text" ng-value="$ctrl.row.empresa_nombre" class="form-control" ng-if="$ctrl.edit" ng-disabled="$ctrl.edit"/>
+                <div class="input-group" style="width:100%;" ng-if="!$ctrl.edit">
+                    <input type="text" autocomplete="off" class="form-control" placeholder="Nombre de Empresa"  ng-model="$ctrl.selected" uib-typeahead="company as company.empresa_nombre for company in $ctrl.filterCompanies($viewValue,1)" typeahead-on-select="($ctrl.params.empresa_id = $ctrl.selected.id)" ng-disabled="$ctrl.sending">
+                    <div class="input-group-btn" ng-if="$ctrl.selected.id>0">
+                        <a href class="btn btn-sm btn-danger" ng-click="$ctrl.clear()"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <div class="col-sm-12">
+                <input type="text" ng-model="$ctrl.params.para" id="para" required placeholder="Para" class="form-control">
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <div class="col-sm-12">
+                <input type="text" ng-model="$ctrl.params.contenido_paquete" id="contenido_paquete" required placeholder="Contenido Paquete" class="form-control">
+            </div>
+        </div>
+        <div class="form-group form-group-sm" id="deliver-content" ng-if="$ctrl.edit && $ctrl.row.estado==='E'">
+            <div class="col-sm-12">
+                <input type="text" ng-model="$ctrl.params.entregado_a" id="entregado_a" placeholder="Entregado a" class="form-control">
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-sm-2 control-label">Local</label>
+            <div class="col-sm-10">
+                <select class="form-control" ng-model="$ctrl.params.local_id" ng-options="(l.id*1) as l.nombre for l in $ctrl.locales"></select>
+            </div>
+        </div>
+        <hr>
+        <div class="text-right">
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="$ctrl.close()"><i class="fa fa-times"></i> Cerrar</button>
+            <button class="btn btn-warning btn-sm" type="submit" ng-disabled="!($ctrl.params.empresa_id>0 && $ctrl.params.para.length>0 && $ctrl.params.contenido_paquete.length>0)">
+                <i class="fa fa-check"></i> Procesar
+            </button>
+        </div>
+    </form>
+</div>

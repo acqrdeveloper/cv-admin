@@ -1,0 +1,52 @@
+<div ng-controller="OficinaCtrl as vm">
+	<div class="well well-sm mb0">
+		<form class="form-inline ng-pristine ng-valid">
+			<div class="form-group form-group-sm">
+				<select class="form-control" ng-model="vm.params.local_id" ng-options="l.id as l.nombre for l in vm.auxs.locales" ng-change="vm.search()"></select>
+			</div>
+			<div class="form-group form-group-sm">
+				<select class="form-control" ng-model="vm.params.modelo_id" ng-options="l.id as l.nombre for l in vm.auxs.modelos" ng-change="vm.search()"></select>
+			</div>
+			<div class="form-group form-group-sm">
+				<select class="form-control" ng-model="vm.params.estado" ng-change="vm.search()"><option value="A">Activo</option> <option value="I">Inactivo</option> </select>
+			</div>
+			<div class="form-group form-group-sm" ng-if="vm.roles.check(75)">
+				<button class="btn btn-sm btn-primary" ng-click="vm.openModal('create')"><i class="fa fa-plus-circle"></i> Nueva oficina</button>
+			</div>
+		</form>
+	</div>
+	<div class="table-responsive mt10">
+		<table class="table table-condensed table-hover">
+			<thead>
+				<tr>
+					<th>Nombre</th>
+					<th>Tipo</th>
+					<th>Local</th>
+					<th class="text-center">Capacidad</th>
+					<th class="text-center">Estado</th>
+					<th>Opciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-if="vm.auxs.searching">
+					<td colspan="6"><i class="fa fa-refresh fa-spin fa-fw"></i> Cargando</td>
+				</tr>
+				<tr ng-if="!vm.auxs.searching && vm.data.length <= 0">
+					<td colspan="6">No hay oficinas</td>
+				</tr>
+				<tr ng-if="!vm.auxs.searching" ng-repeat="oficina in vm.data" class="{{ oficina.estado === 'I'?'danger':''}}">
+					<td>{{ 'Piso ' + oficina.piso_id + ' Sala ' + oficina.oficina_nombre }}</td>
+					<td>{{ oficina.modelo_nombre }}</td>
+					<td>{{ oficina.local_nombre }}</td>
+					<td class="text-center">{{ oficina.capacidad }}</td>
+					<td class="text-center">{{ oficina.estado }}</td>
+					<td>
+						<button class="btn btn-xs btn-primary" ng-click="vm.openModal('create', oficina)"><i class="fa fa-pencil fa-wt" ng-if="vm.roles.check(76)"></i></button>
+						<button class="btn btn-xs {{oficina.estado === 'A' ? 'btn-danger' : 'btn-success'}} hint--left" aria-label="{{oficina.estado === 'A' ? 'Desactivar' : 'Activar'}}" ng-click="vm.openModal('delete',oficina)" ng-if="vm.roles.check(77)"><i class="fa {{oficina.estado === 'A' ? 'fa-trash' : 'fa-check'}} fa-wt"></i></button>
+						<button class="btn btn-xs btn-success hint--left" aria-label="Bloquear" ng-click="vm.openBan(oficina)" ng-if="vm.roles.check(78)"><i class="fa fa-ban fa-wt"></i></button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

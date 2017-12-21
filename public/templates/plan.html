@@ -1,0 +1,58 @@
+<div ng-controller="PlanCtrl as vm" ng-init="vm.search()">
+	<div class="well well-sm mb0">
+		<form class="form-inline">
+			<div class="form-group form-group-sm">
+			    <div class="btn-group">
+			        <label class="btn btn-primary btn-sm" ng-model="vm.auxs.estado" uib-btn-radio="'A'" ng-click="vm.search()">Activos</label>
+			        <label class="btn btn-danger btn-sm" ng-model="vm.auxs.estado" uib-btn-radio="'E'" ng-click="vm.search()">Inactivo</label>
+			    </div>
+			</div>
+			<div class="form-group form-group-sm" ng-if="vm.roles.check(70)">
+				<button class="btn btn-sm btn-primary" ng-click="vm.openModal('create')"><i class="fa fa-plus-circle"></i> Agregar Plan</button>
+			</div>
+		</form>
+	</div>
+	<div class="table-responsive">
+		<table class="table table-condensed table-hover">
+			<thead>
+				<tr>
+					<th style="width:15%">Plan</th>
+					<th style="width:25%">Descripción</th>
+					<th style="width:9%">Precio</th>
+					<th style="width:7%" class="text-center">Copias</th>
+					<th style="width:7%" class="text-center">Impresiones</th>
+					<th style="width:14%" class="text-center">Horas<br>Privada / Reunión</th>
+					<th style="width:7%" class="text-center">Proyector</th>
+					<th style="width:6%" class="text-center">Cochera</th>
+					<th style="width:10%"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-if="vm.auxs.searching">
+					<td colspan="9"><i class="fa fa-refresh fa-spin fa-fw"></i> Cargando</td>
+				</tr>
+				<tr ng-if="!vm.auxs.searching" class="{{ plan.estado == 'E' ? 'danger': ''}}" ng-repeat="plan in vm.data">
+					<td>{{ plan.nombre }}</td>
+					<td>{{ plan.descripcion }}</td>
+					<td>S/. {{ plan.precio|number:2 }}</td>
+					<td class="text-center">{{ plan.cantidad_copias }}</td>
+					<td class="text-center">{{ plan.cantidad_impresiones }}</td>
+					<td class="text-center">
+						<b class="hp">{{ plan.horas_privada }}</b> / 
+						<b class="hr">{{ plan.horas_reunion }}</b>
+					</td>
+					<td class="text-center">{{ plan.proyector === 'N' ? 'NO' : 'SI' }}</td>
+					<td class="text-center">{{ plan.cochera === 'N' ? 'NO' : 'SI' }}</td>
+					<td>
+						<button class="btn btn-xs btn-primary" ng-click="vm.openModal('create',plan)" ng-if="vm.roles.check(71)">
+							<i class="fa fa-pencil"></i>
+						</button>
+						<button class="btn btn-xs btn-{{ plan.estado == 'E' ? 'success' : 'danger' }} change-plan" ng-click="vm.openModal('update',plan)" ng-if="vm.roles.check(72)">
+							<i class="fa fa-{{ plan.estado == 'E' ? 'check' : 'trash' }}"></i>
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

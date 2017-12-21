@@ -1,0 +1,15 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$ctrl.close()"><span
+                aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Eliminar Reserva</h4>
+</div>
+<div class="modal-body">
+    <h3>{{ $ctrl.row.empresa_nombre }}?</h3>
+    <p>¿Segura de eliminar esta reserva?<br>Ojo, al eliminar una reserva todos los item extras que
+    pudieron haberse creado como por ejemplo cobro por proyectores y cocheras extras se anularan. Si
+    es que hubieran.</p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default btn-sm" ng-click="$ctrl.close()">Cancelar</button>
+    <button type="button" class="btn btn-danger btn-sm" ng-click="$ctrl.deleteReserve()"><i class="fa fa-trash"></i> Eliminar</button>
+</div>

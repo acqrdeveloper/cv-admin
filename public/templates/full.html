@@ -1,0 +1,103 @@
+<div id="wrapper" ng-controller="AppCtrl as vm">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2 text-center" id="content-bar-message">
+            <div id="bar-message" class="hidden"></div>
+        </div>
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="#" class="push-url" data-url="">
+                <img src="/images/logo-centros.png" alt="centros" height="52" style="margin-left: 15px">
+            </a>
+        </div>
+        <ul class="nav navbar-top-links navbar-right">
+            <li>
+                <a data-toggle="modal" href ng-click="vm.openAccounts()">
+                    <i class="fa fa-bank fa-fw"></i> Cuentas Bancarias
+                </a>
+            </li>
+            <li class="dropdown" id="dropdown-notify" uib-dropdown>
+                <a class="dropdown-toggle hint--bottom-left" aria-label="Mostrar Notificaciones" data-toggle="dropdown"
+                   href id="btnGetNotify" uib-dropdown-toggle>
+                    <i class="fa fa-bell fa-fw"></i> <span class="badge badge-danger" id="count-notify" ng-if="vm.count_notify>0">{{ vm.count_notify }}</span>
+                </a>
+                <ul class="dropdown-menu dropdown-alerts" id="barNotify" uib-dropdown-menu>
+                    <li ng-if="vm.notifications.length<=0">
+                        <div class="text-center">No tienes nuevos mensajes</div>
+                    </li>
+                    <li ng-repeat-start="msg in vm.notifications" ng-if="vm.notifications.length>0">
+                        <a href ui-sref="{{ msg.module }}" class="push-url" ng-click="vm.decreaseNotifyCount(msg)">
+                            <div>
+                                <h5 class="text-primary" style="text-transform: capitalize;"><i class="fa fa-check-square-o"></i> {{ msg.module }}</h5>
+                                <p class="small mb0">
+                                    <strong>{{ msg.from }}</strong>
+                                    {{ msg.message }}
+                                </p>
+                                <small class="text-muted"><i class="fa fa-clock-o"></i> {{ msg.created_at }}</small>
+                            </div>
+                        </a> 
+                    </li>
+                    <li class="divider" ng-repeat-end></li>
+                </ul>
+            </li>
+            <li class="dropdown" uib-dropdown>
+                <a class="dropdown-toggle" data-toggle="dropdown" href id="admin-name" uib-dropdown-toggle>
+                    <i class="fa fa-user fa-fw"></i>
+                    <span>{{ vm.user.nombre }}</span>
+                    <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user" uib-dropdown-menu>
+                    <li ng-if="vm.roles.check(4)" ><a  ui-sref="cupon"><i class="fa fa-users fa-fw"></i> Cupones</a></li>
+                    <li ng-if="vm.roles.check(5)"><a ui-sref="usuario"><i class="fa fa-users fa-fw"></i> Lista de Usuarios</a></li>
+                    <li ng-if="vm.roles.check(6)"><a ui-sref="configuracion"><i class="fa fa-cog fa-fw"></i> Configuración</a></li>
+                    <li><a href="/logout" target="_self"><i class="fa fa-power-off fa-fw"></i> Salir</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse collapse">
+                <ul class="nav" id="side-menu">
+                    <li>
+                        <a ui-sref-active="active" ui-sref="dashboard" ><i class="fa fa-dashboard fa-fw"></i> Inicio</a>
+                    </li>
+                    <li  ng-if="vm.roles.check(7)">
+                        <a ui-sref-active="active" ui-sref="empresas"><i class="fa fa-building"></i> Empresas</a>
+                    </li>
+                    <li  ng-if="vm.roles.check(79)">
+                        <a ui-sref-active="active" ui-sref="nueva_empresa"><i class="fa fa-plus-square"></i> Nueva Empresa</a>
+                    </li>
+                    <li  ng-if="vm.roles.check(80)">
+                        <a ui-sref-active="active" ui-sref="reserva"><i class="fa fa-calendar fa-fw"></i> Reserva</a>
+                    </li>
+                    <li  ng-if="vm.roles.check(90)">
+                        <a ui-sref-active="active" ui-sref="asistencia" ><i class="fa fa-dashboard fa-fw"></i> Asistencia</a>
+                    </li>
+                    <li  ng-if="vm.roles.check(91)">
+                        <a ui-sref-active="active" ui-sref="bandeja" ><i class="fa fa-inbox fa-fw"></i> Bandeja<span class="badge pull-right {{ vm.inbox > 0 ? 'bg-red':'' }}" > {{ !vm.inbox ? 0 : ( vm.inbox ) }} </span></a>
+                    </li>
+                    <li  ng-if="vm.roles.check(94)">
+                        <a ui-sref-active="{'active': 'recado-correspondencia.**'}" ui-sref="recado-correspondencia.recado"><i class="fa fa-envelope"></i>
+                            Recado y Correspondencia</a>
+                    </li>
+                    <li ng-if="vm.roles.check(108)">
+                        <a ui-sref-active="active" ui-sref="factura"><i class="fa fa-cc-visa fa-fw"></i> Factura</a>
+                    </li>
+                    <li ng-if="vm.roles.check(111)">
+                        <a ui-sref-active="active" ui-sref="seguimiento"><i class="fa fa-car"></i> Seguimiento <span class="badge pull-right {{ vm.mycrm > 0 ? 'bg-red':''}}" > {{ vm.mycrm }} </span></a>
+                    </li>
+                    <li ng-if="vm.roles.check(114)">
+                        <a ui-sref-active="active" ui-sref="reporte"><i class="fa fa-file-pdf-o fa-fw"></i> Reporte</a>
+                    </li>
+                    <li ng-if="vm.roles.check(116)">
+                        <a ui-sref-active="active" ui-sref="abogado"><i class="fa fa-gavel fa-fw"></i> Abogado</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="page-wrapper" ui-view></div>
+</div>

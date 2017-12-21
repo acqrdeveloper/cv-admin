@@ -1,0 +1,26 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$ctrl.close()"><span
+                aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="modalHistoryId">{{ $ctrl.row.empresa_nombre }}</h4>
+</div>
+<div class="modal-body">
+    <table class="table">
+        <tbody id="tableHistoryReserva">
+            <tr ng-if="$ctrl.loading"><td><i class="fa fa-refresh fa-spin fa-fw"></i> Cargando</td></tr>
+            <tr ng-if="$ctrl.error"><td>Hubo un error al cargar el historial</td></tr>
+            <tr ng-if="!$ctrl.loading && $ctrl.data.length>0" ng-repeat="history in $ctrl.data">
+                <td>
+                    <span>{{history.texto}}</span> por {{history.usuario}} <i class="fa fa-clock-o"></i>
+                    {{history.fecha}}<br>
+                    <!--<strong><i class="fa fa-calendar"></i> {{history.observacion}}</strong>-->
+                </td>
+            </tr>
+            <tr ng-if="$ctrl.data.length<=0 && !$ctrl.loading">
+                <td class="text-center">Esta reserva no tiene historial</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="$ctrl.close()">Cerrar</button>
+</div>

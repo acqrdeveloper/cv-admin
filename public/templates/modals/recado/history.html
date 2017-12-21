@@ -1,0 +1,43 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$ctrl.close()"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title text-primary" id="modalRecadoHistory">{{$ctrl.row.empresa_nombre}}</h4>
+</div>
+<div class="modal-body">
+    <h5 class="text-muted mt0">DATOS ACTUALES:</h5>
+    <ul>
+        <li><strong>Contenido / Paquete: </strong><span>{{$ctrl.row.contenido_paquete}}</span></li>
+        <li><strong>Para: </strong><span>{{$ctrl.row.para}}</span></li>
+        <li><strong>Entregado a: </strong><span>{{$ctrl.row.entregado_a}}</span></li>
+        <li><strong>Lugar: </strong><span>{{$ctrl.row.lugar}}</span></li>
+    </ul>
+    <br>
+    <h5 class="text-muted">HISTORIAL</h5>
+    <table class="table table-condensed table-striped">
+        <thead class="hidden">
+        <td style="width:20%"></td>
+        <td style="width:16%"></td>
+        <td style="width:16%"></td>
+        <td style="width:16%"></td>
+        <td style="width:16%"></td>
+        <td style="width:16%"></td>
+        </thead>
+        <tbody>
+            <tr ng-if="$ctrl.data.length==0">
+                <td colspan="6">Este recado no tiene historial</td>
+            </tr>
+            <tr ng-repeat="h in $ctrl.data" ng-if="$ctrl.data.length>0">
+                <td>{{ h.observacion }}</td>
+                <td>{{ h.usuario }}</td>
+                <td>{{ h.fecha }}</td>
+                <td>{{ h.contenido }}</td>
+                <td>{{ h.para }}</td>
+                <td>{{ h.entregado_a }}</td>
+                <td>{{ h.lugar }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <hr>
+    <div class="form-group text-right mb0">
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="$ctrl.close()"><i class="fa fa-times"></i> Cerrar</button>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="modal-header">
+	<button type="button" class="close" ng-click="$ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="modalCorrespondencia">Correspondencia</h4>
+</div>
+<div class="modal-body">
+	<form id="frm-correspondencia" class="form-horizontal" ng-submit="$ctrl.send()">
+		<input type="hidden" name="$ctrl.params.empresa_id" id="correspondencia_empresa_id" ng-disabled="$ctrl.sending">
+		<div class="form-group form-group-sm">
+			<div id="ac" class="col-sm-12">
+				<div class="input-group" style="width:100%;">
+					<input class="form-control" type="text" ng-if="$ctrl.edit" ng-model="$ctrl.params.empresa_nombre" disabled>
+					<input type="text" id="autoc-empresa-correspondencia" autocomplete="off" class="form-control" placeholder="Nombre de Empresa" ng-if="!$ctrl.edit" ng-model="$ctrl.selected" uib-typeahead="company as company.empresa_nombre for company in $ctrl.filterCompanies($viewValue,1)" typeahead-on-select="($ctrl.params.empresa_id = $ctrl.selected.id)" ng-disabled="$ctrl.sending">
+					<div class="input-group-btn" ng-if="$ctrl.selected.id>0">
+						<a href class="btn btn-sm btn-danger" ng-click="$ctrl.clearSelection()"><i class="fa fa-times"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-group form-group-sm" id="email-add-cc" ng-if="$ctrl.cc && $ctrl.params.entregado_a == undefined">
+			<label class="label-control col-sm-2">Cc</label>
+			<div class="col-sm-10">
+				<input type="email" name="cc" id="addcc" class="form-control" placeholder="Con copia a" ng-model="$ctrl.params.addcc" ng-disabled="$ctrl.sending">
+			</div>
+		</div>
+		<div class="form-group form-group-sm" id="content-add-cc" ng-if="$ctrl.params.entregado_a == undefined">
+			<div class="col-sm-12">
+				<a href id="add_cc" role="button" data-cancel-text="Cancelar" class="btn-link" ng-click="$ctrl.showCC($event)">
+					<span ng-if="!$ctrl.cc">Cc: Enviar una copia a otro correo</span>
+					<span ng-if="$ctrl.cc">Cancelar</span>
+				</a>
+			</div>
+		</div>
+		<div class="form-group form-group-sm">
+			<label class="control-label col-sm-2">Remitente</label>
+			<div class="col-sm-10">
+				<input type="text" name="remitente" id="remitente" required class="form-control" placeholder="Remitente" ng-model="$ctrl.params.remitente" ng-disabled="$ctrl.sending">
+			</div>
+		</div>
+		<div class="form-group form-group-sm">
+			<label class="control-label col-sm-2">Asunto</label>
+			<div class="col-sm-10">
+				<input type="text" name="asunto" id="asunto" required class="form-control" placeholder="Asunto" ng-model="$ctrl.params.asunto" ng-disabled="$ctrl.sending">
+			</div>
+		</div>
+		<div class="form-group form-group-sm" ng-if="$ctrl.params.estado == 'E'">
+			<label for="entregado_a" class="control-label col-sm-2">Destinatario</label>
+			<div class="col-sm-10">
+				<input type="text" name="entregado_a" id="destinatario" class="form-control" placeholder="Destinatario" ng-model="$ctrl.params.entregado_a" ng-disabled="$ctrl.sending">
+			</div>
+		</div>
+		<div class="form-group form-group-sm">
+		<label class="col-sm-2 control-label">Local</label>
+		<div class="col-sm-10">
+			<select name="local_id" class="form-control" id="local-correspondencia" ng-model="$ctrl.params.local_id" ng-options="local.id as local.nombre for local in $ctrl.locales" ng-disabled="$ctrl.sending">
+				<option value="">Seleccione</option>
+			</select>
+		</div>
+		</div>
+		<hr>
+		<div class="text-right mb0">
+			<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="$ctrl.close()" ng-disabled="$ctrl.sending">Cerrar</button>
+			<button type="submit" class="btn btn-warning btn-sm" ng-disabled="!($ctrl.params.empresa_id>0 && $ctrl.params.remitente.length > 0 && $ctrl.params.local_id > 0 && $ctrl.params.asunto.length > 0) || $ctrl.sending" ><i class="fa fa-check"></i> Guardar</button>
+		</div>
+	</form>
+</div>

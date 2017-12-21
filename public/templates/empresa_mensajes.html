@@ -1,0 +1,49 @@
+<div class="row" ng-controller="EmpresaMensajeCtrl as vm" ng-init="vm.getData()">
+    <div class="col-sm-12">
+        <div class="panel panel-default panel-body">
+            <form class="form-inline col-md-12">
+                <div class="control-group form-inline">
+	                <div class="form-group form-group-sm input-group">
+	                    <select class="filter-cbo form-control" ng-model="vm.params.anio" ng-options="y for y in vm.lists.anio" ng-change="vm.getData()"></select>
+	                </div>
+	                <div class="form-group form-group-sm input-group">
+	                    <select class="filter-cbo form-control" ng-model="vm.params.mes" ng-options="(key*1) as value for (key,value) in vm.lists.mes" ng-change="vm.getData()"></select>
+	                </div>
+                    <div class="form-group form-group-sm input-group">
+                        <select class="filter-cbo form-control" ng-model="vm.params.asunto" ng-options="asunto.id as asunto.nombre for asunto in vm.lists.asunto" ng-change="vm.getData()"></select>
+                    </div>
+                    <div class="form-group form-group-sm input-group">
+                        <select class="filter-cbo form-control" ng-model="vm.params.tipo" ng-options="tipo.id as tipo.nombre for tipo in vm.lists.tipos" ng-change="vm.getData()"></select>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <table class="table table-striped table-hover table-condensed mb90">
+            <thead>
+                <tr>
+                    <th style="text-align: center; width:15%" ng-if="vm.params.tipo=='received'" >De</th>
+                    <th style="text-align: center; width:15%" ng-if="vm.params.tipo=='send'" >A</th>
+                    <th style="text-align: center; width:15%">Asunto</th>
+                    <th style="text-align: center; width:55%">Mensaje</th>
+                    <th style="text-align: center; width:15%">Creado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="r in vm.data" >
+                    <td ng-if="vm.params.tipo=='received'">{{ vm.auxs.empleados[r.de]  }}</td><!-- + " - - " + r.de -->
+                    <td ng-if="vm.params.tipo=='send'">{{ vm.auxs.empleados[r.a] }}</td><!-- + " - - " + r.a  -->
+                    <td style="text-align: center;">{{ vm.auxs.asunto[r.asunto] }}</td>
+                    <td ng-if="r.mensaje.length<=100"><div ng-bind-html="r.mensaje | to_trusted"></div></td>
+                    <td ng-if="r.mensaje.length>100">{{ r.mensaje.substr( 0, 100 ) + "............. . ." }}</td>
+                    <td style="text-align: center;">{{ r.created_at }}</td>
+                    <td>
+                        <a ng-click="vm.showDetail(r)" class="btn btn-circle btn-default hint--left" aria-label="VER MENSAJES">
+                            <i class="fa fa-arrow-right fa-lg text-warning"></i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

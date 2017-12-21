@@ -1,0 +1,40 @@
+<div class="modal-header">
+	<button type="button" class="close" ng-click="ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" ng-if="ctrl.action === 'I'">Confirmar Asistencia</h4>
+	<h4 class="modal-title" ng-if="ctrl.action === 'E'">Registrar Asistencia</h4>
+</div>
+<div class="modal-body">
+	<form class="form-horizontal" ng-submit="ctrl.confirm()" ng-if="ctrl.action === 'I'">
+		<p>¿Desea confirmar la asistencia del Sr(a). <b>{{ ctrl.persona.nomape }}</b> al evento <b>{{ ctrl.evento.evento }}?</b></p>
+		<hr>
+		<div class="text-right mb0">
+			<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="ctrl.close()" ng-disabled="ctrl.sending">Cerrar</button>
+			<button type="submit" class="btn btn-warning btn-sm" ng-disabled="ctrl.sending"><i class="fa fa-check"></i> Confirmar</button>
+		</div>
+	</form>
+	<form ng-submit="ctrl.register()" ng-if="ctrl.action === 'E'">
+		<div class="form-group input-group">
+			<input type="text" class="form-control" placeholder="DNI" maxlength="8" minlength="8" ng-model="ctrl.params.dni" ng-required="true" ng-disabled="ctrl.sending || ctrl.searching">
+			<div class="input-group-btn">
+				<button type="button" class="btn hint--left" aria-label="Buscar con DNI" ng-click="ctrl.searchID()">
+					<i ng-if="!ctrl.searching" class="fa fa-search" ng-disabled="ctrl.sending"></i>
+					<i ng-if="ctrl.searching" class="fa fa-refresh fa-spin" ng-disabled="ctrl.sending"></i>
+				</button>
+			</div>
+		</div>
+		<div class="form-group">
+			<input type="text" class="form-control" placeholder="Nombres y Apellidos" maxlength="150" ng-model="ctrl.params.nomape" ng-required="true" ng-disabled="ctrl.sending || ctrl.searching">
+		</div>
+		<div class="form-group">
+			<input type="email" class="form-control" placeholder="Correo electrónico" ng-model="ctrl.params.email" ng-disabled="ctrl.sending || ctrl.searching">
+		</div>
+		<div class="form-group">
+			<input type="text" class="form-control" placeholder="Tel&eacute;fono" ng-model="ctrl.params.movil" ng-disabled="ctrl.sending || ctrl.searching">
+		</div>
+		<hr>
+		<div class="text-right mb0">
+			<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="ctrl.close()" ng-disabled="ctrl.sending || ctrl.searching">Cerrar</button>
+			<button type="submit" class="btn btn-warning btn-sm" ng-disabled="ctrl.sending || ctrl.searching"><i class="fa fa-check"></i> Registrar</button>
+		</div>
+	</form>
+</div>

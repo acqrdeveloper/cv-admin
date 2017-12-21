@@ -1,0 +1,153 @@
+<div ng-controller="UsuarioCtrl as vm" ng-init="vm.fn.init()">
+    <div ng-if="!vm.auxs.viewForm">
+        <div class="well well-sm mb0 clearfix" style="background-color: #f8f8f8;">
+            <form class="form-inline">
+                <div class="form-group">
+                    <div class="btn-group">
+                        <label class="btn btn-success" ng-model="vm.auxs.search.estado" uib-btn-radio="'A'" ng-click="vm.fn.filter()">Activos</label>
+                        <label class="btn btn-danger" ng-model="vm.auxs.search.estado" uib-btn-radio="'E'" ng-click="vm.fn.filter()">Eliminados</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button ng-click="vm.fn.search()" type="button" aria-label="Refrescar"
+                            class="btn hint--bottom hint--rounded"><i class="fa fa-refresh"></i>
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary hint--right" aria-label="Nuevo Usuario" ng-click="vm.fn.openForm()"><i class="fa fa-plus-circle"></i> Nuevo Usuario</button>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="col-sm-12" ng-if="!vm.auxs.searching">
+                <div class="pull-left pagination">
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ 1 + ((vm.auxs.search.pagina-1)*vm.auxs.search.limite) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">hasta</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ vm.table.length + ((vm.auxs.search.pagina-1)*vm.auxs.search.limite) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">de</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ vm.totalItems }}</span></li>
+                    <li class="disabled  text-center"><span style="width: 150px;" aria-hidden="true">registros encontrados</span>
+                    </li>
+                </div>
+                <ul ng-change="vm.fn.search()" uib-pagination boundary-links="true" total-items="vm.totalItems"
+                    ng-model="vm.auxs.search.pagina" max-size="5" class="pagination-sm pull-right" previous-text="&lsaquo;"
+                    next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-link-numbers="true"
+                    rotate="false" items-per-page="vm.auxs.search.limite">
+                </ul>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover table-condensed mb90" id="lista-empresas">
+                <thead>
+                    <tr  class="warning">
+                        <th>Nombre</th>
+                        <th>Login</th>
+                        <th>Email</th>
+                        <th>Contraseña</th>
+                        <th>Asesor</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-if="vm.auxs.searching"><td colspan="7"><i class="fa fa-refresh fa-spin"></i> Cargando...</td></tr>
+                    <tr ng-repeat="row in vm.table" ng-if="!vm.auxs.searching">
+                        <td>{{ row.nombre }}</td>
+                        <td>{{ row.login }}</td>
+                        <td>{{ row.email }}</td>
+                        <td>{{ row.contrasenia }}</td>
+                        <td class="text-center">{{ (row.asesor == 'S' ? 'SI':'NO') }}</td>
+                        <td class="text-center"><i class="fa fa-check text-info" ng-if="row.estado == 'A' "></i><i class="fa fa-times text-danger" ng-if="row.estado == 'E' "></i></td>
+                        <td class="text-center">
+                            <div class="btn-group" uib-dropdown>
+                                <button ng-if="row.estado == 'A'  && vm.permissions.check(65)" class="btn btn-default btn-xs hint--top-left hint--rounded "
+                                        aria-label="Editar" ng-click="vm.fn.openForm(row);"><i
+                                        class="fa fa-pencil"></i>
+                                </button>
+                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false" uib-dropdown-toggle>
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+                                    <li>
+                                        <a ng-if="row.estado == 'A' && vm.permissions.check(66)" href ng-click="vm.fn.changeState(row,'E')"><i
+                                                class="fa fa-remove fa-fw text-danger fa-fw"></i> Deshabilitar Cuenta</a>
+                                        <a ng-if="row.estado == 'E' && vm.permissions.check(66)" href ng-click="vm.fn.changeState(row,'A')"><i
+                                                class="fa fa-check fa-fw text-success fa-fw"></i> Habilitar Cuenta</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div ng-if="vm.auxs.viewForm">
+        
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                <div class="panel-title pull-left"><i class="fa fa-user"></i> Registro de Usuario</div>
+                <div class="pull-right">
+                    <button class="btn btn-danger hint--left" aria-label="Cancelar y Cerrar" ng-click="vm.fn.openForm()"><i class="fa fa-times"></i></button>
+                </div>
+            </div>
+            <div class="panel-body">
+                <form role="form" ng-submit="vm.fn.save()">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <div>
+                                <input type="text" class="form-control" placeholder="Nombre del Usuario" ng-required="true" ng-disabled="vm.auxs.saving || (vm.params.id > 0 && vm.params.asesor == 'S')" ng-model="vm.params.nombre">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <div>
+                                <input type="email" class="form-control" placeholder="Correo electrónico del Usuario" ng-required="true" ng-disabled="vm.auxs.saving || vm.params.id > 0" ng-model="vm.params.email">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Es Asesor</label>
+                            <div>
+                                <label class="radio-inline mr10">
+                                    <input type="radio" ng-model="vm.params.asesor" value="S" ng-disabled="vm.auxs.saving || (vm.params.id > 0 && vm.params.asesor == 'S')">Sí
+                                </label>
+                                <label class="radio-inline mr10">
+                                    <input type="radio" ng-model="vm.params.asesor" value="N" ng-disabled="vm.auxs.saving || (vm.params.id > 0 && vm.params.asesor == 'S')">No
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Login</label>
+                            <div>
+                                <input type="text" class="form-control" placeholder="Nombre para iniciar sesión" ng-required="true" ng-disabled="vm.auxs.saving || (vm.params.id > 0 && vm.params.asesor == 'S')" ng-model="vm.params.login">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña</label>
+                            <div>
+                                <input type="password" class="form-control" placeholder="Contraseña de acceso" ng-required="true" ng-disabled="vm.auxs.saving" ng-model="vm.params.contrasenia" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Usuario</label>
+                            <select class="form-control" ng-model="vm.params.rol_id" ng-options="(r.id*1) as r.nombre for r in vm.auxs.roles" ng-required="true" ng-disabled="vm.auxs.saving || (vm.params.id > 0 && vm.params.asesor == 'S')"></select>
+                        </div>
+                        <div class="form-group clearfix">
+                            <button type="submit" class="btn btn-primary pull-right" ng-disabled="vm.auxs.saving"><span ng-if="!vm.auxs.saving">Guardar</span><span ng-if="vm.auxs.saving"><i class="fa fa-refresh fa-spin"></i> Guardando</span></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,136 @@
+<div ng-controller="Correspondencia2Ctrl as vm">
+	<div class="well well-sm mt20 mb0">
+		<div class="row">
+			<form method="post" id="frm-correspondencia-buscar" class="form-inline col-sm-12">
+				<input type="hidden" ng-model="vm.params.empresa_id">
+				<div class="form-group form-group-sm">
+					<select class="form-control" ng-model="vm.params.anio" ng-options="y for y in vm.years" ng-change="vm.filterSearch()">
+					</select>
+				</div>
+				<div class="form-group form-group-sm">
+					<select name="mes" class="form-control cbo_mes" ng-model="vm.params.mes" ng-options="(key*1) as value for (key,value) in vm.months" ng-change="vm.filterSearch()">
+					</select>
+				</div>
+				<div class="form-group form-group-sm">
+					<select id="estado" name="estado" class="form-control" ng-model="vm.params.estado" ng-options="key as value for (key,value) in vm.states" ng-change="vm.filterSearch()">
+						<option value="-">Todos</option>
+					</select>
+				</div>
+				<div class="form-group form-group-sm input-group">
+					<input id="filter_empresa_nombre" type="text" autocomplete="off" class="form-control width250" placeholder="Nombre de Empresa" ng-model="vm.auxs.selected" uib-typeahead="company as company.empresa_nombre for company in vm.filterCompanies($viewValue)" typeahead-on-select="(vm.params.empresa_id = vm.auxs.selected.id) && vm.filterSearch()"> 
+					<div class="input-group-btn" ng-if="vm.params.empresa_id>0">
+						<a href class="btn btn-sm btn-danger" ng-click="vm.clearSelection()"><i class="fa fa-times"></i></a>
+					</div>
+				</div>
+				<div class="form-group form-group-sm">
+					<input type="text" class="form-control filter-asunto" placeholder="Filtrar por" ng-model="vm.params.filter" ng-keyup="$event.keyCode == 13 && vm.filterSearch()">
+					<select id="cboFilter" class="form-control" ng-model="vm.params.filter_search" ng-change="vm.filterSearch()">
+						<option value="asunto">Asunto</option>
+						<option value="remitente">Remitente</option>
+					</select>
+				</div>
+				<div class="form-group" ng-if="vm.roles.check(102)">
+					<input type="button" value="Nuevo" id="btn-nuevo" title="Nueva Correspondencia" class="btn btn-primary btn-sm" ng-click="vm.openModal('create')">
+				</div>
+				<div class="form-group" ng-if="vm.roles.check(103)">
+					<button type="button" id="btn-export" aria-label="Exportar a Excel" class="btn btn-success btn-sm hint--bottom" ng-click="vm.export()"> <i class="fa fa-download fa-lg"></i></button>
+				</div>
+				<div class="form-group"  ng-if="vm.roles.check(104) && vm.auxs.selection.length > 0">
+					<button type="button" class="btn btn-sm btn-info hint--bottom-left" aria-label="Agregar Masivamente" id="btnOpenAddDestinatioMasive" ng-click="vm.openModal('deliver')">Entregar</button>
+				</div>
+				<div class="form-group">
+	                <button ng-click="vm.filterSearch()" class="btn btn-sm btn-default btnRefreshData hint--bottom" aria-label="Actualizar Lista" id="btnRefreshCorrespondencias"><i class="fa fa-refresh fa-fw fa-lg"></i></button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="row">
+		<div id="list-correspondencias-paginator" class="col-sm-12" ng-if="!loading">
+			<div class="pull-left pagination">
+				<li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ 1 + ((vm.params.pagina-1)*vm.params.limite) }}</span></li>
+				<li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">hasta</span></li>
+				<li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ vm.data.length + ((vm.params.pagina-1)*vm.params.limite) }}</span></li>
+				<li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">de</span></li>
+				<li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000" aria-hidden="true">{{ vm.auxs.totalItems }}</span></li>
+				<li class="disabled  text-center"><span style="width: 150px;" aria-hidden="true">registros encontrados</span></li>
+			</div>
+			<ul uib-pagination boundary-links="true" total-items="vm.auxs.totalItems" ng-model="vm.params.pagina" max-size="5" class="pagination-sm pull-right" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="vm.search()" boundary-link-numbers="true" rotate="false" items-per-page="vm.params.limite"></ul>
+		</div>
+	</div>
+	<div class="table-responsive">
+		<table class="table table-striped table-hover table-condensed mb90" id="tbl-correspondencia">
+			<thead>
+				<tr>
+					<th style="width:2%"><input type="checkbox" id="check-all" ng-checked="vm.auxs.isToggle" ng-click="vm.checkAll()"></th>
+					<th style="width:25%">Empresa</th>
+					<th style="width:15%">Remitente</th>
+					<th style="width:12%">Asunto</th>
+					<th style="width:12%" class="text-center">Ingreso</th>
+					<th style="width:11%" class="text-center">Entrega</th>
+					<th style="width:16%">Entregado a</th>
+					<th style="width:3%"></th>
+					<th style="width:5%"></th>
+				</tr>
+			</thead>
+			<tbody id="tbody-correspondencias">
+				<tr ng-if="vm.auxs.loading">
+					<td colspan="9"><i class="fa fa-refresh fa-spin fa-fw"></i> Cargando...</td>
+				</tr>
+				<tr ng-if="!vm.auxs.loading && vm.data.length <= 0">
+					<td colspan="9">No hay correspondencias</td>
+				</tr>
+				<tr ng-if="!vm.auxs.loading" ng-repeat="row in vm.data">
+					<td><input ng-if="row.estado == 'P'" type="checkbox" value="{{ row.id }}" ng-click="vm.selectRow(row.id)" ng-checked="vm.auxs.selection.indexOf(row.id) > -1"></td>
+					<td>
+						<b class="emp"><a href class="push-url">{{row.empresa_nombre}}</a></b>
+						<div class="title-extra-info">
+							<small class="empleado">
+								<b>Recibido por:</b> <span>{{ row.creado_por }}</span>
+							</small>
+							<p ng-if="row.cc"><b>Con copia a:</b> {{ row.cc }}</p>
+						</div>
+					</td>
+					<td>{{row.remitente}}</td>
+					<td>{{row.asunto}}</td>
+					<td class="text-center wpn">
+						<small>
+							{{row.fecha_creacion}}<br>
+							<b>{{row.lugar}}</b>
+						</small>
+					</td>
+					<td class="text-center">
+						<small>{{ row.fecha_entrega }}<br>{{ row.entregado_por }}</small>
+					</td>
+					<td ng-switch on="row.estado">
+						<span ng-switch-when="E">{{ row.entregado_a }}</span>
+						<a ng-switch-when="P" ng-if="vm.roles.check(104)" ng-click="vm.openModal('deliver', row)" href class="btnEntregar" title="Agregar destinatario"><i class="fa fa-plus"></i> Agregar</a>
+					</td>
+					<td class="status" ng-switch on="row.estado">
+						<span ng-switch-when="P" class="hint--top-left hint--warning" aria-label="PENDIENTE">
+							<i class="fa fa-warning text-warning fa-lg"></i>
+						</span>
+						<span ng-switch-when="E" class="hint--top-left hint--success" aria-label="ENTREGADO">
+							<i class="fa fa-check text-success fa-lg"></i>
+						</span>
+						<span ng-switch-default class="hint--top-left hint--error" aria-label="ELIMINADO">
+							<i class="fa fa-times-circle text-danger fa-lg"></i>
+						</span>
+					</td>
+					<td class="options">
+						<div class="btn-group" uib-dropdown>
+							<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Opciones" uib-dropdown-toggle>
+								<i class="fa fa-cog"></i>
+								<span class="sr-only">Opciones</span>
+							</button>
+							<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+								<li ng-if="vm.roles.check(105) && row.estado != 'B'"><a href class="editar-u" ng-click="vm.openModal('create',row)"><i class="fa fa-edit fa-fw"></i> Editar</a></li>
+								<li ng-if="vm.roles.check(106) && row.estado != 'B'"><a href ng-click="vm.openModal('delete', row)"><i class="fa fa-trash fa-fw"></i> Eliminar</a></li>
+								<li><a href ng-click="vm.openModal('history',row)" ng-if="vm.roles.check(107)"><i class="fa fa-list fa-fw"></i> Ver Historial</a></li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

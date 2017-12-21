@@ -1,0 +1,52 @@
+<div class="page mt10 fade in" ng-controller="DetalleReservaCtrl as vm">
+    <div class="well well-sm">
+        <form class="form-inline" id="frm-historial">
+            <input type="hidden" value="<?php echo $empresaID ?>" name="empresa_id">
+                <div class="form-group">
+                    <select class="form-control" ng-model="vm.params.anio" ng-options="y for y in vm.years" ng-change="vm.search()">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select name="mes" class="form-control cbo_mes" ng-model="vm.params.mes" ng-options="(key*1) as value for (key,value) in vm.months" ng-change="vm.search()">
+                    </select>
+                </div>
+                <div class="form-group">                
+                    <select class="form-control" ng-model="vm.params.modelo_id" ng-options="modelo.id as modelo.nombre for modelo in vm.auxs.modelos" ng-change="vm.search();"></select>
+                </div>
+            <div class="form-group">
+                <button class="btn btn-sm btn-default" ng-click="vm.search()"><i class="fa fa-search"></i> Buscar</button>
+            </div>
+            <div class="form-group">
+                <b id="desc-horas">Consumido {{ vm.consumo | diffTime }}</b>
+            </div>
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-condensed table-bordered table-strike">
+            <thead>
+            <tr class="th-title">
+                <th>Local</th>
+                <th>Oficina</th>
+                <th>Duración</th>
+                <th>Fecha</th>
+                <th>Tiempo</th>
+            </tr>
+            </thead>
+            <tbody id="hover">
+                <tr ng-if="vm.data.length===0">
+                    <th height="40" colspan="5">No hay reservas registradas</th>
+                </tr>
+                <tr ng-if="vm.loading">
+                    <th height="40" colspan="5"><i class="fa fa-refresh fa-spin fa-fw"></i> Cargando</th>
+                </tr>
+                <tr ng-if="!vm.loading" ng-repeat="row in vm.data">
+                    <td>{{row.local_nombre}}</td>
+                    <td>Piso {{row.piso_id}} Sala {{ row.oficina_nom }}, {{ row.modelo_nombre == "OFICINA" ? row.modelo_nombre + " " +  row.oficina_tipo :row.modelo_nombre }}<br>{{row.local_direccion}}</td>
+                    <td>{{row.hora_inicio}} - {{row.hora_fin}}</td>
+                    <td>{{row.fecha_reserva}}</td>
+                    <td>{{row.diferencia | diffTime}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

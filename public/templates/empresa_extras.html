@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col-sm-12 mt10">
+        <table class="table table-striped table-hover table-condensed mb90" >
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Extra</th>
+                    <th style="text-align: center;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="r in vm.auxs.extras" ng-if="r.id!='-'">
+                	<td style="text-align: center;">{{ r.nombre }}</td>
+                	<td>
+		                <select class="form-control input-sm" ng-model="vm.params[r.id]" ng-change="vm.methods.insertUpdate(r.id, vm.params[r.id])">
+		                    <option value="">Extra Estado</option>
+		                    <option value="S">Si</option><!--SI-->
+		                    <option value="N">No</option><!--NO-->
+		                    <option value="I">No interesado</option><!--NO_INTERESADO-->
+		                    <option value="P">Pospuesto</option><!--POSPUESTO-->
+		                </select>
+                	</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

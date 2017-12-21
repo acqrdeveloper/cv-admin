@@ -1,0 +1,264 @@
+<div class="row" ng-if="view.validateHideView">
+    <div class="col-md-12">
+        <div class="panel panel-default panel-body">
+            <h6 class="text-muted">MENSAJE</h6>
+            <hr>
+            <div class="form-inline">
+                <div class="form-group input-group">
+                    <input type="text" autocomplete="off"
+                           class="form-control width250 ng-valid ng-dirty ng-touched ng-valid-editable ng-not-empty"
+                           placeholder="Nombre de Empresa"
+                           ng-model="filters.selected"
+                           uib-typeahead="company as company.empresa_nombre for company in filters.filterCompanies($viewValue)"
+                           typeahead-on-select = "(filters.params.empresa_id = filters.selected.id) &amp;&amp; methods.applyChange()"
+                           aria-autocomplete="list" aria-expanded="false" aria-owns="typeahead-21-4831" style="">
+                            <!--<ul class="dropdown-menu ng-isolate-scope ng-hide"  ng-style="{top: position().top+'px', left: position().left+'px'}" role="listbox" aria-hidden="true"  id="typeahead-21-4831" matches="matches" active="activeIdx" select="select(activeIdx, evt)" move-in-progress="moveInProgress" query="query" position="position"  debounce="debounceUpdate" style="top: 30px; left: 0px;">-->
+                            <!--&lt;!&ndash; ngRepeat: match in matches track by $index &ndash;&gt;-->
+                            <!--</ul>-->
+                    <ul class="dropdown-menu ng-hide"
+                        role="listbox"
+                        aria-hidden="true"
+                        id="typeahead-21-4831"
+                        matches="matches"
+                        active="activeIdx"
+                        select="select(activeIdx, evt)"
+                        move-in-progress="moveInProgress"
+                        query="query"
+                        position="position"
+                        debounce="debounceUpdate"
+                        style="top: 30px; left: 0px;">
+                    </ul>
+                    <div class="input-group-btn ng-scope" ng-if="filters.selected.id > 0">
+                        <a href="" class="btn btn-danger" ng-click="methods.clearCompanies()"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <select class="filter-cbo form-control" ng-model="filters.selectedYear"
+                            ng-options="y for y in filters.years"
+                            ng-change="methods.applyChange()">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="filter-cbo form-control" ng-model="filters.selectedMonth"
+                            ng-options="(key*1) as value for (key,value) in  filters.months"
+                            ng-change="methods.applyChange()">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="filter-cbo form-control" ng-model="filters.selectedRespondido"
+                            ng-options="x as x.name for x in filters.arrayRespondidos track by x.id"
+                            ng-change="methods.applyChange()">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="filter-cbo form-control" ng-model="filters.selectedLeido"
+                            ng-options="x as x.name for x in filters.arrayLeidos track by x.id"
+                            ng-change="methods.applyChange()">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="filter-cbo form-control" ng-model="filters.selectedTipo"
+                            ng-options="x as x.name for x in filters.arrayTipos track by x.id"
+                            ng-change="methods.applyChange()">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="filter-cbo form-control" ng-model="filters.selectedEstado"
+                            ng-options="x as x.name for x in filters.arrayEstados track by x.id"
+                            ng-change="methods.applyChange()">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button ng-click="methods.applyChange()" type="button" aria-label="ACTUALIZAR"
+                            class="btn btn-success hint--bottom"><i class="fa fa-refresh"></i></button>
+                </div>
+                <div class="form-group">
+                    <button ng-click="methods.applyClean()" type="button" aria-label="NUEVO"
+                            class="btn btn-primary hint--bottom"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="list-correspondencias-paginator" class="col-sm-12" ng-if="!validateLoading">
+                <div class="pull-left pagination">
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ 1 + ((params.pagina-1)*20) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">hasta</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ data.length + ((params.pagina-1)*20) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">de</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ totalItems }}</span></li>
+                    <li class="disabled  text-center"><span style="width: 150px;" aria-hidden="true">registros encontrados</span>
+                    </li>
+                </div>
+                <ul ng-change="methods.applyChange()" uib-pagination boundary-links="true" total-items="totalItems"
+                    ng-model="params.pagina" max-size="5" class="pagination-sm pull-right" previous-text="&lsaquo;"
+                    next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-link-numbers="true"
+                    rotate="false" items-per-page="20">
+                </ul>
+            </div>
+        </div>
+        <style>
+            .applyCursor:hover {
+                cursor: pointer;
+                padding: 4px !important;
+                border-radius: 6px !important;
+                font-size: 1.25rem !important;
+                background-color: #f5f5f5 !important;
+            }
+        </style>
+        <table class="table">
+            <thead>
+            <tr>
+                <th width="30%">EMPRESA</th>
+                <th width="25%">ASUNTO</th>
+                <th width="30%">MENSAJE</th>
+                <th width="15%">FECHA</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center">
+                <td colspan="4" ng-if="validateLoading"><i class="fa fa-refresh fa-spin"></i> Cargando...</td>
+            </tr>
+            <tr class="text-center">
+                <td ng-if="validateFailedLoading" colspan="4">
+                    <i class="fa fa-warning text-warning"></i>
+                    <span class="text-muted"> no se encontraron registros.</span>
+                </td>
+            </tr>
+            <tr ng-if="!validateLoading;" ng-repeat=" row in data" ng-click="methods.clickHideView(row.id,row)"
+                class="applyCursor">
+                <td>
+                    <span><a href="{{location.origin}}/detalle_empresa/{{row.empresa_id}}">{{ row.empresa_nombre }}</a></span>
+                    <small class="help-block mb0">
+                        <strong>
+                            <i ng-if="row.movil == 'android' " class="fa fa-android fix-size type-{{ row.movil }}"></i>
+                            <i ng-if="row.movil == 'ios' " class="fa fa-apple fix-size-sm type-{{ row.movil }}"></i>
+                            <i ng-if="row.movil != 'android' && row.movil != 'ios' "
+                               class="fa fa-desktop fix-size-sm"></i>
+                            {{ row.usuario }}
+                        </strong>
+                    </small>
+                </td>
+                <td><p class="text-lowercase" maxlength="2">{{ row.asunto }}</p></td>
+                <td><p class="oneline-txt">{{ row.mensaje }}</p></td>
+                <td>{{ row.created_at }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row" ng-if="!view.validateHideView">
+    <div class="col-md-12">
+        <article id="mensaje-detalle" class="">
+            <div class="row">
+                <div class="col-md-12">
+                    <button ng-click="methods.clickHideView()" class="btn btn-sm btn-success pull-left">
+                        <i class="fa fa-level-up fa-lg fa-rotate-270"></i> Regresar
+                    </button>
+                    <h4 class="pull-left" id="message-title" style=" padding-left: 10px">
+                        <a href="{{location.origin}}/detalle-empresa/{{ view.data.row_request.empresa_id }}">{{
+                            view.data.row_request.empresa_nombre}}</a>
+                    </h4>
+                    <div class="pull-right help-block person">
+                        <i class="fa fix-size fa-android type-android"
+                           ng-if=" view.data.row_request.movil == 'android' "></i>
+                        <i class="fa fix-size fa-apple type-ios" ng-if=" view.data.row_request.movil == 'ios' "></i>
+                        <i class="fa fix-size fa-desktop" ng-if=" view.data.row_request.usuario == 'Cliente' "></i>
+                        <i class="fa fix-size fa-user" ng-if=" !view.data.row_request.usuario == 'Cliente' "></i>
+                        <span id="person">{{ view.data.row_request.usuario }}</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <br>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="well well-sm"
+                         style="background-color: transparent;-webkit-box-shadow:none;box-shadow:none;">
+                        <div id="asunto-title">
+                            <div class="col-sm-9">
+                                <i class="fa fa-bookmark" style="color:rgb(206, 0, 0);"></i>
+                                <span>{{ view.data.row_request.asunto }}</span>
+                            </div>
+                            <div class="col-sm-3 text-right">
+                                <i class="fa fa-clock-o"></i>
+                                <span>{{ view.data.row_request.created_at }}</span>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="text-center " style="background-color: #fff !important;"
+                             ng-if=" (view.data.length <= 0) ">
+                            <span><i class="fa fa-refresh fa-spin"></i><span
+                                    class="text-muted"> cargando pregunta...</span></span>
+                        </div>
+                        <div id="text-message" ng-if=" !(view.data.length <= 0 ) ">
+                            <blockquote>
+                                <p>
+                                    <i class="fa fa-quote-left"></i>
+                                    <span>{{ view.data.row_request.mensaje }}</span>
+                                    <i class="fa fa-quote-right"></i>
+                                </p>
+                            </blockquote>
+                        </div>
+                    </div>
+                    <div class="chat-panel panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-comments fa-fw"></i> Conversación
+                        </div>
+                        <div class="panel-body">
+                            <ul class="chat" id="conversation">
+                                <li class=" text-center"
+                                    ng-if=" ( view.data2.length <= 0) && (view.validateLoading) && !(view.validateFailedLoading)">
+                                    <span><i class="fa fa-refresh fa-spin"></i><span class="text-muted"> cargando respuesta...</span></span>
+                                </li>
+
+                                <li ng-if=" (view.validateFailedLoading) && !(view.validateLoading)">
+                                    <span class="text-muted"><i class="fa fa-warning"></i> no tiene respuesta.</span>
+                                </li>
+
+                                <li class="right"
+                                    ng-if=" !(view.data2.length <= 0) && !(view.validateLoading) && !(view.validateFailedLoading)"
+                                    ng-repeat=" row2 in view.data2.row_response ">
+                                    <span class="pull-right">
+                                        <i class="fa fa-group fa-lg"></i>
+                                        {{ row2.empleado  }}
+                                    </span>
+                                    <div class="chat-body clearfix">
+                                        <div class="header">
+                                            <small class="text-muted">
+                                                <i class="fa fa-clock-o fa-fw"></i>
+                                                {{ row2.created_at }}
+                                            </small>
+                                            <strong class="pull-right primary-font"></strong>
+                                        </div>
+                                        <p>{{ row2.respuesta }}</p>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                        <div class="panel-footer">
+                            <form role="form" ng-submit="methods.conversation()" method="post">
+                                <input name="mensaje_id" type="hidden" ng-model="view.subfilters.mensaje_id"
+                                       value="{{ view.data.row_request.id }}">
+                                <div class="form-group">
+                                    <textarea ng-model="view.subfilters.respuesta" name="respuesta"
+                                              class="form-control input-sm" placeholder="Escriba su respuesta..."
+                                              required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-mail-reply"></i>
+                                    Responder
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>

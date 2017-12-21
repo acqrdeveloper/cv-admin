@@ -1,0 +1,157 @@
+<div class="mt20" ng-controller="PbxCtrl as vm" ng-init="vm.fn.init()">
+    <div class="panel" ng-if="vm.aux.mainView">
+        <div class="panel-heading clearfix">
+            <div class="pull-right">
+                <button class="btn btn-primary btn-sm hint--left" aria-label="Agregar" ng-click="vm.fn.openForm()" ng-if="vm.roles.check(30)"><i class="fa fa-plus-circle"></i> Agregar Central</button>
+            </div>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>CDR</th>
+                        <th class="text-center">Estado</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-if="vm.aux.loading"><td colspan="6" class="text-center"><b><i class="fa fa-refresh fa-spin fa-fw"></i> Cargando...</b></td></tr>
+                    <tr ng-if="!vm.aux.loading" ng-repeat="pbx in vm.aux.data">
+                        <td>{{ pbx.number }}</td>
+                        <td>{{ pbx.cid_name }}</td>
+                        <td class="text-center"><label class="badge" ng-class="{'badge-success':pbx.state=='A', 'badge-danger':pbx.state=='I'}">&nbsp;</label></td>
+                        <td class="text-right" ng-if="pbx.state=='A'">
+                            <button class="btn btn-primary btn-xs hint--left" aria-label="Editar" ng-click="vm.fn.openForm(pbx)" ng-if="vm.roles.check(31)" ng-disabled="vm.aux.processing"><i class="fa fa-pencil"></i></button>
+                            <button class="btn btn-danger btn-xs hint--left" aria-label="Inhabilitar Central" ng-click="vm.fn.deletePbx(pbx, $index)" ng-if="vm.roles.check(32)" ng-disabled="vm.aux.processing"><i class="fa fa-trash"></i></button>
+                        </td>
+                        <td class="text-right" ng-if="pbx.state!='A'">
+                            <button class="btn btn-success btn-xs hint--left" aria-label="Activar" ng-click="vm.fn.activePbx(pbx)" ng-if="vm.roles.check(32)" ng-disabled="vm.aux.processing"><i class="fa fa-check"></i></button>
+                        </td>
+                    </tr>
+                    <tr ng-if="!vm.aux.loading && vm.aux.data.length<=0">
+                        <td colspan="4" class="text-center"><i class="fa fa-warning"></i> No tiene central(es) configuradas</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel" ng-if="!vm.aux.mainView">
+        <div class="panel-heading clearfix">
+            <span class="panel-title">Registro de Central</span>
+            <div class="pull-right">
+                <button class="btn btn-danger btn-sm hint--left" aria-label="Cerrar" ng-click="vm.fn.openForm()"><i class="fa fa-times"></i></button>
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group form-group-sm">
+                            <label class="control-label col-sm-2">Número</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" ng-model="vm.aux.info.number" ng-disabled="vm.aux.saving" readonly ng-if="!vm.aux.create">
+
+                                <ui-select ng-model="vm.aux.selectedNumber" on-select="vm.params.id = vm.aux.selectedNumber.id" ng-disabled="vm.aux.saving">
+                                    <ui-select-match placeholder="Selecciona un número">{{$select.selected.number}}</ui-select-match>
+                                    <ui-select-choices repeat="n in vm.aux.numbers | propsFilter: {number:$select.search}">
+                                        <span>{{ n.number }}</span>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <!--
+                                <select class="form-control" ng-model="vm.params.id" ng-if="vm.aux.create">
+                                    <option ng-repeat="n in vm.aux.numbers" value="{{n.id}}">{{n.number}}</option>
+                                </select>-->
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="control-label col-sm-2">CDR</label>
+                            <div class="col-sm-5">
+                                <div class="input-group" style="width: 100%;">
+                                    <input type="text" autocomplete="off" class="form-control" placeholder="CDR" ng-model="vm.params.cid_name" ng-disabled="vm.aux.saving">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="control-label col-sm-2">Audio</label>
+                            <div class="col-sm-5">
+                                <input type="file" class="form-control" id="audio_file"><br>
+                                <audio  ng-if="vm.params.record_id > 0 && !vm.aux.saving" controls ng-src="/pbx/{{vm.params.customer_id}}/{{vm.params.id}}/record"></audio>
+                                <div ng-if="vm.params.record_id == null" class="text-danger"><b>(*) No tiene audio cargado</b></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-group-sm">
+                            <label class="control-label col-sm-2">Texto</label>
+                            <div class="col-sm-9">
+                                <textarea ng-model="vm.params.description" class="form-control" style="resize: none;" rows="7" ng-disabled="vm.aux.saving"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="control-label col-sm-2">Canción</label>
+                            <div class="col-sm-9">
+                                <input type="text" ng-model="vm.params.song" class="form-control" ng-disabled="vm.aux.saving">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                        <div class="col-sm-12 text-right">
+                            <button class="btn btn-primary" ng-click="vm.fn.save()"><i class="fa fa-save"></i> Guardar</button>
+                        </div>
+                </div>
+                <hr>
+                <div class="form-group form-group-sm" id="tbl-central-options" ng-if="vm.params.id>0 && !vm.aux.create">
+                    <div class="col-sm-12">
+                        <div class="panel panel-info">
+                            <div class="panel-heading clearfix">
+                                <span class="panel-title">Opciones de la central</span>
+                                <div class="pull-right" ng-if="vm.roles.check(32)">
+                                    <button type="button" class="btn btn-sm btn-primary" ng-click="vm.fn.openModal('option-create')">
+                                        <i class="fa fa-plus"></i> Nueva opción
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <table class="table table-strike table-hover table-condensed">
+                                    <thead>
+                                    <tr>
+                                        <th style="width:10%">Opción</th>
+                                        <th style="width:7%">Anexo</th>
+                                        <th style="width:25%">Nombre Anexo</th>
+                                        <th style="width:15%">Redirección</th>
+                                        <th style="width:18%">&nbsp;</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="oc-tbody">
+                                        <tr ng-if="vm.row.opciones.length < 1">
+                                            <td colspan="6">No hay opciones configuradas.</td>
+                                        </tr>
+                                        <tr ng-repeat="opcion in vm.aux.info.opciones track by $index">
+                                            <td>{{ opcion.option }}</td>
+                                            <td>
+                                                <span ng-if="opcion.destiny_type=='EXTENSION'">{{ opcion.label }}</span>
+                                            </td>
+                                            <td ng-if="opcion.destiny_type=='EXTENSION'">{{ opcion.label_name }}</td>
+                                            <td ng-if="opcion.destiny_type=='OPERATOR'">OPERADORA</td>
+                                            <td>
+                                                <span ng-if="opcion.destiny_type=='EXTENSION'">{{ opcion.redirect_to }}</span>
+                                            </td>
+                                            <td ng-if="vm.roles.check(32)">
+                                                <div class="text-right">
+                                                    <button class="btn btn-xs btn-primary" ng-click="vm.fn.openModal('option-create', opcion, $index)"><i class="fa fa-pencil"></i></button>
+                                                    <button class="btn btn-xs btn-danger" ng-click="vm.fn.openModal('delete', opcion, $index)"><i class="fa fa-trash"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>  
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

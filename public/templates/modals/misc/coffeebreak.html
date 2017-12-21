@@ -1,0 +1,63 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="ctrl.close()"><span aria-hidden="true">&times;</span></button>
+    <h5 class="modal-title" id="modalPay">Agregar Coffeebreak</h5>
+</div>
+<div class="col-sm-10 col-sm-offset-1"></div>
+<div class="modal-body">
+    <form class="form-horizontal" ng-submit="ctrl.addItem()">
+        <div class="form-group">
+            <label class="control-label col-sm-3">Combo</label>
+            <div class="col-sm-8">
+                <ui-select ng-model="ctrl.aux.selected_coffeebreak">
+                    <ui-select-match placeholder="Selecciona uno de los combos...">{{$select.selected.nombre}}</ui-select-match>
+                    <ui-select-choices repeat="combo in ctrl.aux.coffeebreaks" style="width:200%;max-height: 300px;top: inherit !important;">
+                        <div class="row">
+                            <div class="col-sm-3 padding0">
+                                <img src="/images/coffeebreak/combo{{combo.id}}.jpg" width="100%">
+                            </div>
+                            <div class="col-sm-9">
+                                <b>{{ combo.nombre }}</b>
+                                <div><b>Precio: S/. {{ combo.precio}} x persona</b></div>
+                                <div><b>Contiene:</b></div>
+                                <div style="white-space: pre-wrap;">{{ combo.descripcion }}</div>
+                            </div>
+                        </div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-3">Nro. de personas</label>
+            <div class="col-sm-5">
+                <input type="text" ng-model="ctrl.params.cantidad" class="form-control" placeholder="">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-3">Total a pagar</label>
+            <div class="col-sm-5">
+                <input type="text" readonly class="form-control" value="{{ (ctrl.aux.selected_coffeebreak.precio * ctrl.params.cantidad) | number:2 }}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-3">Reserva</label>
+            <div class="col-sm-8">
+                <ui-select ng-model="ctrl.aux.selected_reserva">
+                    <ui-select-match placeholder="Selecciona uno de las reservas...">{{$select.selected.nombre}}</ui-select-match>
+                    <ui-select-choices repeat="r in ctrl.aux.reservas" style="max-height: 300px;top: inherit !important;">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <b>{{ r.nombre }}</b>
+                                <div><b>Fecha:</b> {{ r.fecha_reserva}}</div>
+                                <div><b>Hora:</b> {{r.hora_inicio}} - {{r.hora_fin}}</div>
+                            </div>
+                        </div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="text-right">
+            <button type="button" class="btn btn-sm btn-default btn-close" ng-click="ctrl.close()" ng-disabled="ctrl.sending">Cancelar</button>
+            <button class="btn btn-sm btn-primary" ng-disabled="!(ctrl.aux.selected_reserva.id>0) || ctrl.params.cantidad<20"><i class="fa fa-plus-circle"></i> Agregar</button>
+        </div>
+    </form>
+</div>

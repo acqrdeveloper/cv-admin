@@ -1,0 +1,14 @@
+<div class="modal-header">
+	<button type="button" class="close" ng-click="ctrl.close()"><span aria-hidden="true">&times;</span></button>
+	<h4 class="modal-title" id="modalCorrespondencia">Cambiar comprobante</h4>
+</div>
+<div class="modal-body">
+    <form id="form-change-ciclo" ng-submit="ctrl.changeComprobante()">
+        <p>Va a cambiar el comprobante <strong>(de <span id="current-ciclo">{{ ctrl.auxs.preferencia_comprobante}}</span> a <span id="ciclo-acambiar">{{ ctrl.params.preferencia_comprobante}}</span>)</strong> de esta empresa. ¿Desea continuar?</p>
+        <hr>
+        <div class="text-right">
+            <button type="button" class="btn btn-sm btn-default" ng-click="ctrl.close()">Cancelar</button>
+            <button class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Aceptar</button>
+        </div>
+    </form>
+</div>

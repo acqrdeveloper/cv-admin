@@ -1,0 +1,364 @@
+<div class="row" title="listado" ng-if=" vm.view.validateHideView; ">
+    <div class="col-md-6 text-left">
+        <h4><i class="fa fa-list-alt"></i> LISTA USUARIOS</h4>
+    </div>
+    <div class="col-md-6 text-right">
+        <button type="button" class="btn btn-primary" ng-click="vm.fnChangeViewCreate()" ng-if="vm.permissions.check(64)"><i
+                class="fa fa-plus-square fa-fw"></i> Nuevo Usuario
+        </button>
+    </div>
+    <div class="col-md-12">
+        <hr>
+    </div>
+    <div class="col-md-12">
+        <div class="panel panel-default panel-body">
+            <div class="form-inline form-group-sm">
+                <div class="form-group">
+                    <select class="filter-cbo form-control" ng-model="vm.model.estado"
+                            ng-options="x as x.name for x in vm.model.arrayEstados track by x.id"
+                            ng-change="vm.fnApplyChange()">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button ng-click="vm.fnApplyChange()" type="button" aria-label="Actualizar Datos"
+                            class="btn btn-success btn-sm hint--bottom hint--rounded"><i class="fa fa-refresh"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="row">
+            <div id="list-correspondencias-paginator" class="col-sm-12" ng-if="!vm.validateLoading">
+                <div class="pull-left pagination">
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ 1 + ((vm.params2.pagina-1)*20) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">hasta</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ vm.data.length + ((vm.params2.pagina-1)*20) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">de</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ vm.totalItems }}</span></li>
+                    <li class="disabled  text-center"><span style="width: 150px;" aria-hidden="true">registros encontrados</span>
+                    </li>
+                </div>
+                <ul ng-change="vm.fnApplyChange()" uib-pagination boundary-links="true" total-items="vm.totalItems"
+                    ng-model="vm.params2.pagina" max-size="5" class="pagination-sm pull-right" previous-text="&lsaquo;"
+                    next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-link-numbers="true"
+                    rotate="false" items-per-page="20">
+                </ul>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th><h6>#</h6></th>
+                <th><h6>NOMBRE</h6></th>
+                <th><h6>LOGIN</h6></th>
+                <th><h6>EMAIL</h6></th>
+                <th><h6>CONTRASEÑA</h6></th>
+                <th><h6>ASESOR</h6></th>
+                <th><h6>ESTADO</h6></th>
+                <th class="text-center"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-center">
+                <td colspan="8" ng-if="vm.validateLoading"><i class="fa fa-refresh fa-spin"></i> Cargando...</td>
+            </tr>
+            <tr class="text-center">
+                <td ng-if="vm.validateFailedLoading" colspan="8">
+                    <i class="fa fa-warning text-warning"></i>
+                    <span class="text-muted"> no se encontraron registros.</span>
+                </td>
+            </tr>
+            <tr ng-if="!vm.validateLoading;" ng-repeat="row in vm.data">
+                <td>{{ $index + 1 }}</td>
+                <td>{{ row.nombre }}</td>
+                <td>{{ row.login }}</td>
+                <td>{{ row.email }}</td>
+                <td>{{ row.contrasenia }}</td>
+                <td>{{ (row.asesor == 'S' ? 'SI':'NO') }}</td>
+                <td ng-if="row.estado == 'A' "><i class="fa fa-check text-info"></i></td>
+                <td ng-if="row.estado == 'E' "><i class="fa fa-times text-danger"></i></td>
+                <td class="text-center">
+                    <div class="btn-group" uib-dropdown>
+                        <button ng-if="row.estado == 'A'  && vm.permissions.check(65)" class="btn btn-default btn-xs hint--top-left hint--rounded "
+                                aria-label="Editar" ng-click="vm.fnChangeViewEdit(row);"><i
+                                class="fa fa-pencil-square-o fa-fw text-success"></i>
+                        </button>
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false" uib-dropdown-toggle>
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+                            <!--<li>
+                                <a ng-if="row.estado == 'A' " href ng-click="vm.fnChangeViewRoles(row)"><i
+                                        class="fa fa-list-alt fa-fw text-info fa-fw"></i> Roles</a>
+                            </li>-->
+                            <li>
+                                <a ng-if="row.estado == 'A' && vm.permissions.check(66)" href ng-click="vm.fnChangeEstado(row,'E')"><i
+                                        class="fa fa-remove fa-fw text-danger fa-fw"></i> Deshabilitar Cuenta</a>
+                                <a ng-if="row.estado == 'E' && vm.permissions.check(66)" href ng-click="vm.fnChangeEstado(row,'A')"><i
+                                        class="fa fa-check fa-fw text-success fa-fw"></i> Habilitar Cuenta</a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row" title="nuevo" ng-if=" !vm.viewCreate.validateHideView; ">
+
+    <form role="form" method="post" ng-submit="vm.fnStore();">
+        <div class="col-md-6 text-left">
+            <h4><i class="fa fa-pencil-square-o"></i> USUARIO</h4>
+        </div>
+        <div class="col-md-6 text-right">
+            <button type="button" class="btn btn-default" ng-click="vm.fnChangeViewCreate()"><i
+                    class="fa fa-list-alt fa-fw"></i> Lista Usuarios
+            </button>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save fa-fw"></i> Guardar</button>
+        </div>
+        <div class="col-md-12">
+            <hr>
+        </div>
+        <div class="col-md-6">
+            <h6 class="text-primary alert alert-info"><i class="fa fa-plus-circle"></i> INFORMACION</h6>
+        </div>
+        <div class="col-md-6">
+            <h6 class="text-primary alert alert-info"><i class="fa fa-plus-circle"></i> PERMISOS</h6>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <small class="text-muted">NOMBRE</small>
+                        <input ng-model="vm.model.nombre" type="text" class="form-control" required
+                               placeholder="nombre" autofocus>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <small class="text-muted">LOGIN</small>
+                                <input ng-model="vm.model.login" type="text" class="form-control" required
+                                       placeholder="login">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <small class="text-muted">CONTRASEÑA</small>
+                                <input ng-model="vm.model.contrasenia" type="text" class="form-control" required
+                                       placeholder="contraseña">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <small class="text-muted">EMAIL</small>
+                        <input ng-model="vm.model.email" type="email" class="form-control" required
+                               placeholder="email">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <small>TIPO USUARIO</small>
+                                <select class="form-control" ng-model="vm.model.modulo"
+                                        ng-options="x as x.modulo for x in vm.dataModulos  track by x.id ">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <div class="form-group">
+                                <br>
+                                <br>
+                                <small>ASESOR</small>
+                                <label class="radio-inline">
+                                    <input type="radio" name="asesor1" ng-model="vm.model.asesor" ng-value="'S'"> SI
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="asesor1" ng-model="vm.model.asesor" ng-value="'N'"
+                                           checked> NO
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <ul class="list-group mb0">
+                <li class="list-group-item">
+                    <div class="mt0 mb0 checkbox" style="width: 150px;margin:0 0 0 0;">
+                        <label style="min-height:0">
+                            <input type='checkbox' ng-model="vm.model.selectedAll" ng-checked="false"
+                                   ng-click="vm.fnCheckSelectedAll(1)"><i class="fa fa-chevron-down fa-fw"></i>
+                            seleccionar todos
+                        </label>
+                    </div>
+                </li>
+                <li class="list-group-item" ng-repeat="row in vm.dataPermisos">
+                    <div class="mt0 mb0 checkbox" style="width: 150px;margin:0 0 0 0;">
+                        <label style="min-height:0">
+                            <input type='checkbox' ng-model="row.Selected" value="{{row.pages}}"
+                                   ng-click="vm.fnCheckSelected(row)">{{ row.pages }}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+
+</div>
+
+<div class="row" title="editado" ng-if=" !vm.viewEdit.validateHideView; ">
+
+    <form role="form" method="put" ng-submit="vm.fnUpdate();">
+        <div class="col-md-6 text-left">
+            <h4><i class="fa fa-pencil-square-o"></i> ACTUALIZAR USUARIO</h4>
+        </div>
+        <div class="col-md-6 text-right">
+            <button type="button" class="btn btn-default" ng-click="vm.fnChangeViewEdit()"><i
+                    class="fa fa-list-alt fa-fw"></i> Lista Usuarios
+            </button>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-refresh fa-fw"></i> Actualizar</button>
+        </div>
+        <div class="col-md-12">
+            <hr>
+        </div>
+        <div class="col-md-6">
+            <h6 class="text-primary alert alert-info"><i class="fa fa-plus-circle"></i> INFORMACION</h6>
+        </div>
+        <div class="col-md-6">
+            <h6 class="text-primary alert alert-info"><i class="fa fa-plus-circle"></i> PERMISOS</h6>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <small class="text-muted">NOMBRE</small>
+                        <input ng-model="vm.model.nombre" type="text" class="form-control" disabled placeholder="nombre">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <small class="text-muted">LOGIN</small>
+                                <input ng-model="vm.model.login" type="text" class="form-control" required
+                                       placeholder="login">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <small class="text-muted">CONTRASEÑA</small>
+                                <input ng-model="vm.model.contrasenia" type="text" class="form-control" required
+                                       placeholder="contraseña">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <small class="text-muted">EMAIL</small>
+                        <input ng-model="vm.model.email" type="email" class="form-control" required
+                               placeholder="email">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <small>TIPO USUARIO</small>
+                                <select class="form-control" ng-model="vm.model.modulo"
+                                        ng-options="x as x.modulo for x in vm.dataModulos  track by x.id ">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <div class="form-group">
+                                <br>
+                                <br>
+                                <small>ASESOR</small>
+                                <label class="radio-inline">
+                                    <input type="radio" name="asesor2" ng-model="vm.model.asesor" ng-value="'S'"> SI
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="asesor2" ng-model="vm.model.asesor" ng-value="'N'"
+                                           checked> NO
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <ul class="list-group mb0">
+                <li class="list-group-item">
+                    <div class="mt0 mb0 checkbox" style="width: 150px;margin:0 0 0 0;">
+                        <label style="min-height:0">
+                            <input type='checkbox' ng-model="vm.model.selectedAll" ng-checked="false"
+                                   ng-click="vm.fnCheckSelectedAll(0)"><i
+                                class="fa fa-chevron-down fa-fw"></i> seleccionar todos
+                        </label>
+                    </div>
+                </li>
+                <li class="list-group-item" ng-repeat="row in vm.dataPermisos2">
+                    <div class="mt0 mb0 checkbox" style="width: 150px;margin:0 0 0 0;">
+                        <label style="min-height:0">
+                            <input type='checkbox' ng-click="vm.fnCheckSelected(row)"
+                                   ng-checked=" (row.Selected == 'true' || row.Selected == true || row.checked == 'true' || row.checked == true) ? true : false; "
+                                   ng-model="row.Selected">{{ row.pages }}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+
+</div>
+
+<div class="row" title="roles" ng-if=" !vm.viewRoles.validateHideView; ">
+    <form role="form" method="put" ng-submit="vm.fnUpdateRoles();">
+    <div class="col-md-6 text-left">
+        <h4><i class="fa fa-building"></i> ROLES</h4>
+    </div>
+    <div class="col-md-6 text-right">
+        <button type="button" class="btn btn-default" ng-click="vm.fnChangeViewRoles()"><i
+                class="fa fa-list-alt fa-fw"></i> Lista Usuarios
+        </button>
+        <button type="submit" class="btn btn-primary"><i class="fa fa-refresh fa-fw"></i> Actualizar</button>
+    </div>
+    <div class="col-md-12">
+        <hr>
+    </div>
+    <div class="col-md-12">
+        <div class="table-responsive">
+            <table class="table">
+                <tbody>
+                <tr ng-repeat="one in vm.dataRoles">
+                    <td><b><small>{{ one.page.toUpperCase() }}</small></b></td>
+                    <td ng-repeat="two in one.action">
+                        <div style="width: 100px;margin:0 0 0 0;">
+                            <p>{{two.name}}</p>
+                            <div class="btn-group"  style="width: 100px;margin:0 0 0 0; text-align:center ">
+                                <label ng-change="vm.fnCheckRole(one,two)" class="btn btn-default btn-xs" ng-model="two.Selected" uib-btn-radio="true" uib-uncheckable="uncheckable" >SI</label>
+                                <label ng-change="vm.fnCheckRole(one,two)" class="btn btn-default btn-xs" ng-model="two.Selected" uib-btn-radio="false" uib-uncheckable="uncheckable" >NO</label>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </form>
+</div>

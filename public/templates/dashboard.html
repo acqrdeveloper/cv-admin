@@ -1,0 +1,180 @@
+<div>
+	<div class="mt20" ng-if="validateLoading">
+	    <i class="fa fa-cog fa-spin fa-2x fa-fw"></i><strong>Cargando...</strong>
+	</div>
+	<!-- ************************************************************************************ -->
+	<div ng-if="!validateLoading" id="home_page" class="page">
+		<h4 class="page-header text-warning mt0">Empresas Registradas <small>total <span id="te">{{ empresadata.length }}</span> Empresas</small></h4>
+	</div>
+    <div ng-if="!validateLoading" class="panel panel-default panel-body">
+        <form class="form-inline col-md-12">
+            <div class="control-group form-inline">
+                <div class="form-group form-group-sm">
+                    <select class="filter-cbo form-control" ng-model="params1.anio" ng-options="anio for anio in anios track by anio" ng-change="methods.getDataEmpresa()">
+                    </select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <select class="filter-cbo form-control" ng-model="params1.mes" ng-options="(key*1) as value for (key,value) in mes" ng-change="methods.getDataEmpresa()">
+                    </select>
+                </div>
+	            <div  class="form-group form-group-sm">
+	                <select class="filter-cbo form-control" ng-model="params1.asesor" ng-options="tp as tp.nombre for tp in asesor track by tp.id" ng-change="methods.getDataEmpresa()">
+	                </select>
+	            </div>
+	            <div  class="form-group form-group-sm">
+	                <select class="filter-cbo form-control" ng-model="params1.plan" ng-options="tp as tp.nombre for tp in plan track by tp.id" ng-change="methods.getDataEmpresa()">
+	                </select>
+	            </div>
+	            <div  class="form-group form-group-sm">
+	                <select class="filter-cbo form-control" ng-model="params1.ciclo" ng-options="tp as tp.name for tp in ciclo track by tp.value" ng-change="methods.getDataEmpresa()">
+	                </select>
+	            </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <button ng-click="methods.getDataEmpresa()" type="button" aria-label="FILTRAR" class="btn btn-sm btn-default btnRefreshData hint--top"><i class="fa fa-refresh fa-fw fa-lg"></i></button>
+            </div>
+            <div class="form-group form-group-sm" ng-if="roles.check(2)">
+                <button ng-click="methods.export('empresa')" type="button" aria-label="EXPORTAR" class="btn btn-sm btn-success hint--bottom"><i class="fa fa-file-excel-o"></i></button>
+            </div>
+        </form>
+    </div>
+	<div ng-if="!validateLoading"  style="display:flex; height: 350px;">
+		<div ng-if="!empresaLoading" style="width: 20%; padding: 10px;">
+			<table class="table table-striped table-hover table-condensed mb90">
+				<thead>
+					<tr class="text-center">
+						<th>Plan</th>
+						<th>Cantidad</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="a in empresa_plan" style="cursor: pointer;" ng-click="methods.filterEmpresaByPlan(a.did)">
+						<td class="text-left">{{ a.id }}</td>
+						<td class="text-right">{{ a.value }}</td>
+					</tr>
+					<tr style="cursor: pointer;" ng-click="methods.filterEmpresaByPlan('-')">
+						<td >TOTAL</td>
+						<td class="text-right">{{empresa_plan|sumByKey:'value'|number}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div ng-if="!empresaLoading" style="width: 20%; padding: 10px;">
+			<table class="table table-striped table-hover table-condensed mb90">
+				<thead>
+					<tr class="text-center">
+						<th>Usuario</th>
+						<th>Cantidad</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="a in empresa_usuario" style="cursor: pointer;" ng-click="methods.filterEmpresaByAsesor(a.id)">
+						<td class="text-left">{{ a.id }}</td>
+						<td class="text-right">{{ a.value }}</td>
+					</tr>
+					<tr style="cursor: pointer;" ng-click="methods.filterEmpresaByAsesor('Todos los Asesores')" >
+						<td>TOTAL</td>
+						<td class="text-right">{{empresa_usuario|sumByKey:'value'|number}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	    <div ng-if="!empresaLoading && usuarioR.rold_id != '8' " style="width: 60%; height: 300px; overflow: scroll;">
+	    	<div ng-repeat="r in empresadata" style="padding:15px; border: 1px solid #d8d4d4; font-family: monospace; font-size: 12px;">
+	    		<div style="display: flex;">
+	    			<div style="width: 50%;">
+	    				<a ng-if="!roles.check(9)" >{{ r.empresa_nombre }}</a>
+	    				<a ng-if="roles.check(9)" ng-href="empresa/{{ r.id }}/info">{{ r.empresa_nombre }}</a>
+	    			</div>
+	    			<div style="width: 35%;">
+	    				<b ng-if="r.preferencia_estado='P'">(PENDIENTE) <i class="fa fa-warning orange-b"></i> </b> <strong>({{ r.asesor }})</strong>
+	    			</div>
+	    			<div style="width: 15%;">
+	    				{{ r.plan }}
+	    			</div>
+	    		</div>
+
+	    		<div style="display: flex;">
+					<div style="width: 50%;">
+						Creado: {{ r.fecha_creacion }}
+	    			</div>
+					<div style="width: 50%;">
+						Contrato: {{ r.contrato }}
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+	</div>
+	<!-- ************************************************************************************ -->
+	<div ng-if="!validateLoading" id="home_page" class="page" >
+		<h4 class="page-header text-warning mt0">Cambios de estado de empresas</h4>
+	</div>
+    <div ng-if="!validateLoading" class="panel panel-default panel-body">
+        <form class="form-inline col-md-12">
+            <div class="control-group form-inline">
+                <div class="form-group form-group-sm">
+                    <select class="filter-cbo form-control" ng-model="params2.anio" ng-options="anio for anio in anios track by anio" ng-change="methods.getDataEstado()">
+                    </select>
+                </div>
+                <div class="form-group form-group-sm">
+                    <select class="filter-cbo form-control" ng-model="params2.mes" ng-options="(key*1) as value for (key,value) in mes" ng-change="methods.getDataEstado()">
+                    </select>
+                </div>
+	            <div  class="form-group form-group-sm">
+	                <select class="filter-cbo form-control" ng-model="params2.ciclo" ng-options="tp as tp.name for tp in ciclo track by tp.value" ng-change="methods.getDataEstado()">
+	                </select>
+	            </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <button ng-click="methods.getDataEstado()" type="button" aria-label="FILTRAR" class="btn btn-sm btn-default btnRefreshData hint--top"><i class="fa fa-refresh fa-fw fa-lg"></i></button>
+            </div>
+            <div class="form-group form-group-sm" ng-if="roles.check(3)">
+                <button ng-click="methods.export('estado')" type="button" aria-label="EXPORTAR" class="btn btn-sm btn-success hint--bottom"><i class="fa fa-file-excel-o"></i></button>
+            </div>
+        </form>
+    </div>
+	<div ng-if="!validateLoading" style="display:flex; height: 350px;">
+		<div ng-if="!estadoLoading" style="width: 30%; padding: 10px;">
+			<table class="table table-striped table-hover table-condensed mb90">
+				<thead>
+					<tr class="text-center">
+						<th>Estado</th>
+						<th>Cantidad</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-click="methods.setEstado('')">
+						<td>TOTAL:</td>
+						<td class="text-right">{{estado_empresa|sumByKey:'value'|number}}</td>
+					</tr>
+					<tr ng-repeat="a in estado_empresa">
+						<td class="text-left" ng-click="methods.setEstado(a.estado)" style="font-weight:bolder; color: #1083e6; cursor: pointer;">{{ a.id  | uppercase }}</td>
+						<td class="text-right">{{ a.value }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	    <div ng-if="!estadoLoading && usuarioR.rold_id != '8'" style="width: 70%; height: 300px; overflow: scroll;">
+	    	<div ng-repeat="r in estadodata" ng-if="preferenciaestado=='' || r.preferencia_estado==preferenciaestado" style="padding:15px; border: 1px solid #d8d4d4; font-family: monospace; font-size: 12px;">
+	    		<div style="display: flex;">
+	    			<div style="width: 50%;">
+	    				<a ng-if="!roles.check(9)" >{{ r.empresa_nombre }}</a>
+	    				<a ng-if="roles.check(9)" ng-href="empresa/{{ r.empresa_id }}/info">{{ r.empresa_nombre }}</a>
+	    			</div>
+	    			<div style="width: 50%;">
+	    				<strong>({{ r.asesor }})</strong>
+	    			</div>
+	    		</div>
+	    		<div style="display: flex;">
+					<div style="width: 50%;">
+						Por: {{ r.empleado }} a las {{ r.fecha }}
+	    			</div>
+					<div style="width: 50%;">
+						Contrato: {{ r.contrato }}
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+	</div>
+	<!-- ************************************************************************************ -->
+</div>

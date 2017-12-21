@@ -1,0 +1,117 @@
+<div class="row">
+    <br>
+    <div class="col-md-12">
+        <div class="panel panel-default panel-body mb0">
+            <div class="form-inline form-group-sm">
+                <div class="form-group">
+                    <select class="filter-cbo form-control" ng-model="vm.model.tipo"
+                            ng-options="x as x.name for x in vm.model.arrayTipo track by x.id"
+                            ng-change="vm.fnApplyChange()">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button ng-click="vm.fnApplyChange()" type="button" aria-label="Actualizar Datos"
+                            class="btn btn-success btn-sm hint--bottom hint--rounded"><i class="fa fa-refresh"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="row">
+            <div id="list-correspondencias-paginator" class="col-sm-12" ng-if="!vm.validateLoading">
+                <div class="pull-left pagination">
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ 1 + ((vm.params.pagina-1)*20) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">hasta</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ vm.data.length + ((vm.params.pagina-1)*20) }}</span>
+                    </li>
+                    <li class="disabled  text-center"><span style="width: 50px;" aria-hidden="true">de</span></li>
+                    <li class="disabled  text-center"><span style="background-color: #f8f8f8; color: #000000"
+                                                            aria-hidden="true">{{ vm.totalItems }}</span></li>
+                    <li class="disabled  text-center"><span style="width: 150px;" aria-hidden="true">registros encontrados</span>
+                    </li>
+                </div>
+                <ul ng-change="vm.fnApplyChange()" uib-pagination boundary-links="true" total-items="vm.totalItems"
+                    ng-model="vm.params.pagina" max-size="5" class="pagination-sm pull-right" previous-text="&lsaquo;"
+                    next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-link-numbers="true"
+                    rotate="false" items-per-page="20">
+                </ul>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr ng-if="vm.model.tipo.id == 1;" class="warning"><!--historial empresa-->
+                        <th>#</th>
+                        <th>EMPLEADO</th>
+                        <th>REGISTRO / DETALLE</th>
+                        <th><i class="fa fa-clock-o fa-fw"></i>ULTIMA ACTUALIZACION</th>
+                    </tr>
+                    <tr ng-if="vm.model.tipo.id == 2;" class="warning"><!--historial contrato-->
+                        <th>#</th>
+                        <th>EMPLEADO</th>
+                        <th>CANTIDAD</th>
+                        <th>DESCRIPCION</th>
+                        <th>REGISTRO / DETALLE</th>
+                        <th><i class="fa fa-clock-o fa-fw"></i>ULTIMA ACTUALIZACION</th>
+                    </tr>
+                    <tr ng-if="vm.model.tipo.id == 3" class="warning">
+                        <th>ACCIÓN</th>
+                        <th>ITEM</th>
+                        <th>FECHA</th>
+                        <th>RESPONSABLE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center">
+                        <td colspan="8" ng-if="vm.validateLoading"><i class="fa fa-refresh fa-spin"></i> Cargando...</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td ng-if="vm.validateFailedLoading" colspan="8">
+                            <i class="fa fa-warning text-warning"></i>
+                            <span class="text-muted"> no se encontraron registros.</span>
+                        </td>
+                    </tr>
+                    <tr ng-if="vm.model.tipo.id == 1 && !vm.validateLoading;" ng-repeat="row in vm.data"><!--historial empresa-->
+                        <td>{{ $index +1 }}</td>
+                        <td>{{ row.empleado }}</td>
+                        <td>{{ row.observacion }}</td>
+                        <td>{{ row.fecha }}</td>
+                    </tr>
+                    <tr ng-if="vm.model.tipo.id == 2 && !vm.validateLoading;" ng-repeat="row in vm.data"><!--historial contrato-->
+                        <td>{{ $index +1 }}</td>
+                        <td>{{ row.empleado }}</td>
+                        <td>{{ row.cantidad }}</td>
+                        <td>{{ row.descripcion }}</td>
+                        <td>{{ row.observacion }}</td>
+                        <td>{{ row.fecha_registro }}</td>
+                    </tr>
+                    <tr ng-if="vm.model.tipo.id == 3 && !vm.validateLoading;" ng-repeat="row in vm.data">
+                        <td ng-if="row.reserva_id > 0 && row.estado == 1">USADO</td>
+                        <td ng-if="row.reserva_id > 0 && row.estado == 0">DEVUELTO</td>
+                        <td ng-if="row.reserva_id > 0 && row.estado == 2">EXTRA DADO</td>
+                        <td ng-if="row.reserva_id > 0 && row.estado == 3">EXTRA QUITADO</td>
+                        <td>
+                            <span ng-if="row.horas_reunion>0">Periodo {{ row.anio+" / " + row.mes }} - {{ row.horas_reunion }} horas de reunión {{ row.modelo }} {{ row.oficina_nombre }}</span>
+                            <span ng-if="row.horas_privada>0">Periodo {{ row.anio+" / " + row.mes }} - {{ row.horas_privada }} horas de privada {{ row.modelo }} {{ row.oficina_nombre }}</span>
+                            <span ng-if="row.cantidad_copias>0">Periodo {{ row.anio+" / " + row.mes }} - {{ row.cantidad_copias }} cantidad de copias </span>
+                            <span ng-if="row.cantidad_impresiones>0">Periodo {{ row.anio+" / " + row.mes }} - {{ row.cantidad_impresiones }} cantidad de impresiones</span>
+                        </td>
+                        <td ng-if="row.horas_reunion > 0 || row.horas_privada > 0">
+                            {{ row.fecha_reserva }} {{ row.hora_inicio }} - {{ row.hora_fin }}
+                        </td>
+                        <td ng-if="row.horas_reunion <= 0 && row.horas_privada <= 0">
+                            {{ row.fecha }}
+                        </td>
+                        <td>
+                            {{ row.usuario }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

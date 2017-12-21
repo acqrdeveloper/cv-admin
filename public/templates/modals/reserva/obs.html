@@ -1,0 +1,52 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="$ctrl.close()"><span
+                aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="modalReserveObservacion">{{$ctrl.row.empresa_nombre}}</h4>
+</div>
+<div class="modal-body">
+    <div>
+        <i class="fa fa-building"></i>
+        <span id="info-place">{{ $ctrl.row.local_nombre }} {{ $ctrl.row.oficina_nombre }}</span>
+    </div>
+    <div class="mb15">
+        <i class="fa fa-calendar"></i>
+        <span id="info-datetime">{{ $ctrl.row.created_at }}</span>
+        <i class="fa fa-clock-o"></i>
+        <span id="hours">{{ $ctrl.row.hora_inicio }} - {{ $ctrl.row.hora_fin }}</span>
+    </div>
+    <div id="content-observaciones" class="panel panel-default mb0">
+        <div class="panel-heading">Observaciones</div>
+        <div class="panel-body">
+            <ul class="list-group mb0" style="overflow: auto;height: 200px;min-height: 200px;">
+                <li class="list-group-item" ng-repeat="obs in $ctrl.data">
+                    <small class="help-block muted"><i class="fa fa-user"></i> {{obs.usuario}} {{obs.created_at}}</small>
+                    <p>{{obs.body}}</p>
+                </li>
+            </ul>
+        </div>
+        <div class="panel-footer"><!-- roles -->
+            <form id="frm-observaciones-reserva">
+                <div class="form-group-sm">
+                    <input type="hidden" name="id" id="obs_reserva_id">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="input-group">
+                                <textarea name="body" class="form-control"
+                                          style="padding:4px 10px; resize: none;" rows="4"
+                                          placeholder="Escriba aquí su observación" ng-model="$ctrl.obs" ng-required="true"></textarea>
+                                <span class="input-group-btn">
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary btn-lg" style="padding:28px 10px;" ng-disabled="!($ctrl.obs.length>0)" ng-click="$ctrl.updateObservacion()"><i class="fa fa-sign-in"></i><small> Enviar</small></button>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default btn-sm" ng-click="$ctrl.close()">Cerrar</button>
+</div>

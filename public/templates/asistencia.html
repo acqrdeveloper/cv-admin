@@ -1,0 +1,68 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default panel-body">
+            <div class="form-inline">
+                <div class="form-group">
+                    <select class="filter-cbo form-control" ng-disabled="vm.asistencia.auxs.validateLoading" ng-model="vm.asistencia.params.tipo" ng-change="vm.asistencia.methods.reset()">
+                        <option value="I">Invitado</option>
+                        <option value="E">Evento</option>
+                    </select>
+                </div>
+                <div class="form-group input-group">
+                    <input ng-model="vm.asistencia.params.fecha" ng-disabled="vm.asistencia.auxs.validateLoading" ng-change="vm.asistencia.methods.search()" type="text" class="form-control" uib-datepicker-popup="yyyy-MM-dd" is-open="vm.asistencia.auxs.open1" datepicker-options="vm.asistencia.auxs.dateOptions" readonly="" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" ng-click="vm.asistencia.methods.openCalendar1()"/>
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.asistencia.methods.openCalendar1()">
+                            <i class="fa fa-calendar"></i></button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="filter-cbo form-control" ng-disabled="vm.asistencia.auxs.validateLoading" ng-model="vm.asistencia.params.dni" ng-show="vm.asistencia.params.tipo=='I'"  ng-keyup="$event.keyCode == 13 && vm.asistencia.methods.search()"/>
+                </div>
+                <button type="button" class="btn btn-sm btn-submit hint--top" aria-label="Buscar" ng-click="vm.asistencia.methods.search()" ng-disabled="( vm.asistencia.params.fecha == '' || ( vm.asistencia.params.tipo=='I' && (  vm.asistencia.params.dni == '' || vm.asistencia.params.dni.length !== 8 ) ) || vm.asistencia.auxs.validateLoading )"><i class="fa fa-refresh fa-lg"></i></button>
+            </div>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th ng-if="vm.asistencia.params.tipo === 'I'">DNI</th>
+                    <th ng-if="vm.asistencia.params.tipo === 'I'">NOMBRE</th>
+                    <th>EVENTO</th>
+                    <th>EMPRESA</th>
+                    <th>LUGAR</th>
+                    <th>INI - FIN</th>
+                    <th>CAPACIDAD</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-center">
+                    <td colspan="6" ng-if="vm.asistencia.auxs.validateLoading"><i class="fa fa-refresh fa-spin"></i> Cargando...</td>
+                </tr>
+                <tr class="text-center">
+                    <td ng-if="vm.asistencia.data.rows.length <= 0" colspan="6">
+                        <i class="fa fa-warning text-warning"></i>
+                        <span class="text-muted"> no se encontraron registros.</span>
+                    </td>
+                </tr>
+                <tr ng-repeat="row in vm.asistencia.data.rows" ng-if="!vm.asistencia.auxs.validateLoading">
+                    <td ng-if="vm.asistencia.params.tipo === 'I'">{{vm.asistencia.params.dni}}</td>
+                    <td ng-if="vm.asistencia.params.tipo === 'I'">{{ vm.asistencia.data.persona[0].nomape}}</td>
+                    <td>{{ row.evento }}</td>
+                    <td>{{ row.empresa }}</td>
+                    <td>{{ row.oficina + " " + row.local }}</td>
+                    <td style="text-align: center;">{{ row.hora_inicio + " - " + row.hora_fin }}</td>
+                    <td style="text-align: center;">{{ row.presentes + " / " + row.capacidad }}</td>
+                    <td ng-show="vm.asistencia.params.tipo=='I'">
+                        <a href ng-click="vm.asistencia.methods.openModal(row, 'I')"><i class="fa fa-folder fa-lg"></i></a>
+                        <!-- update hacia asistencia refresh -->
+                    </td>
+                    <td ng-show="vm.asistencia.params.tipo=='E'">
+                        <a href ng-click="vm.asistencia.methods.openModal(row, 'E')"><i class="fa fa-folder fa-lg"></i></a>
+                        <!-- modal para registrar la persona al evento -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="ctrl.close()"><span aria-hidden="true">×</span></button>
+    <h4 class="modal-title" id="modalAdminItem">Administración de items extras</h4>
+</div>
+<div class="modal-body">
+    <ul id="content-items-extras" class="list-group">
+        <li class="list-group-item" ng-repeat="item in ctrl.extraItems track by $index">
+            <div class="row">
+                <div class="col-sm-8">
+                    <input type="text" class="form-control input-sm item-desc" ng-model="ctrl.extraItems[$index].descripcion" ng-disabled="ctrl.saving">
+                </div>
+                <div class="col-sm-2">
+                    <input type="text" name="precio" class="form-control input-sm item-price" ng-model="ctrl.extraItems[$index].precio" ng-disabled="ctrl.saving">
+                </div>
+                <div class="col-sm-2" style="text-align:center">
+                    <button class="btn btn-xs btn-danger del-item-fact" ng-disabled="ctrl.saving" ng-click="ctrl.delete(item.id, $index)">
+                        <i class="fa fa-trash-o fa-lg" title="Eliminar item extra"></i>
+                    </button>
+                    <button class="btn btn-xs btn-success upd-item-fact" ng-disabled="ctrl.saving" ng-click="ctrl.save($index)">
+                        <i class="fa fa-edit fa-lg" title="Actualizar item extra"></i>
+                    </button>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <p><b>*(OJO)</b>, Al eliminar un item, ya no podrás volverlo a activar.</p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-default" ng-click="ctrl.close()">Cerrar</button>
+</div>
